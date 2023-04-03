@@ -11,11 +11,15 @@ import java.util.List;
 
 public interface CommentService {
     List<CommentDto> findCommentsByPost(Post post);
-    Comment findCommentById(Long commentID) throws Status439CommentDoesntExistException;
+    Comment findCommentById(Long commentID)
+            throws Status439CommentDoesntExistException;
 
-    void addComment( String content, JwtUser jwtUser, Long postId ) throws Status436PostDoesntExistException, Status419UserException;
+    void addComment( String content, JwtUser jwtUser, Long postId )
+            throws Status436PostDoesntExistException, Status419UserException;
 
-    void deleteComment( final Long id, JwtUser jwtUser) throws Status419UserException;
-    void updateComment( String content, JwtUser jwtUser, Long comID ) throws Status439CommentDoesntExistException, Status419UserException;
+    void deleteComment( final Long id, JwtUser jwtUser)
+            throws Status419UserException;
+    void updateComment( String content, JwtUser jwtUser, Long comID )
+            throws Status439CommentDoesntExistException, Status419UserException;
 
 }

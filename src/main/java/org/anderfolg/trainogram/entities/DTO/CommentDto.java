@@ -10,6 +10,6 @@ public class CommentDto {
     private String comment;
 
     public CommentDto( Comment com) {
-        this.setComment(com.getComment());
+        this.setComment(com.getContent());
     }
 }

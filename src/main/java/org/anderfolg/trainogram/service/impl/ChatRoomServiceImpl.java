@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -52,6 +53,11 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     @Override
+    public void deleteChatRoomById( Long chatId ) {
+        chatRoomRepository.deleteChatRoomByChatId(chatId);
+    }
+
+    @Override
     public void addUserToChatRoom(Long chatId, JwtUser jwtUser, String username) throws Status419UserException {
         User user = userService.findUserById(jwtUser.id());
         ChatRoom chatRoom = chatRoomRepository.findChatRoomByChatIdAndSender(chatId, user);
@@ -61,24 +67,32 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     }
 
     // chat related functions
-    
-    @Override
-    public Long createChatRoom( JwtUser jwtUser, List<String> usernames) throws Status419UserException {
 
-        if (chatRoomRepository.findTopByOrderByChatIdDesc().isPresent()) {
-            Long chatId = chatRoomRepository.findTopByOrderByChatIdDesc().get().getChatId() + 1L;
-            saveChatRoom(chatId,jwtUser,usernames);
-            log.info("chat ID is "+chatId);
-            return chatId;
-        }else {
-            Long chatId = 0L;
-            saveChatRoom(chatId,jwtUser,usernames);
-            log.info("non present chats found so ID is "+chatId);
-            return chatId;
-        }}
+    @Override
+    public Long createChatRoom(JwtUser jwtUser, List<String> usernames) throws Status419UserException {
+
+        Optional<ChatRoom> lastChatRoom = chatRoomRepository.findTopByOrderByChatIdDesc();
+        long chatId;
+        if (lastChatRoom.isPresent()) {
+            chatId = lastChatRoom.get().getChatId() + 1L;
+            saveChatRoom(chatId, jwtUser, usernames);
+            log.info("chat ID is " + chatId);
+        } else {
+            chatId = 0L;
+            saveChatRoom(chatId, jwtUser, usernames);
+            log.info("non present chats found so ID is " + chatId);
+        }
+        return chatId;
+    }
+
 
     @Override
     public ChatRoom getChatRoomByChatIdAndSender(Long chatId, User sender) {
         return chatRoomRepository.findChatRoomByChatIdAndSender(chatId, sender);
+    }
+
+    @Override
+    public ChatRoom getChatRoomByChatId( Long chatId ) {
+        return chatRoomRepository.findChatRoomByChatId(chatId);
     }
 }

@@ -10,11 +10,19 @@ import org.anderfolg.trainogram.security.jwt.JwtUser;
 import java.util.List;
 
 public interface LikeToCommentService {
-    List<Like> findAllLikesByComment( Long commentID ) throws Status439CommentDoesntExistException;
+    List<Like> findAllLikesByComment( Long commentID )
+            throws Status439CommentDoesntExistException;
 
-    List<Like> findAllLikesByUser( JwtUser jwtUser) throws Status419UserException;
+    List<Like> findAllLikesByUser( JwtUser jwtUser)
+            throws Status419UserException;
 
-    void addLikeToComment( JwtUser jwtUser, Long commentID) throws Status439CommentDoesntExistException, Status440LikeAlreadyExistsException, Status419UserException;
+    void addLikeToComment( JwtUser jwtUser, Long commentID)
+            throws Status439CommentDoesntExistException,
+            Status440LikeAlreadyExistsException,
+            Status419UserException;
 
-    void deleteLikeFromComment(JwtUser jwtUser, Long commentID) throws Status439CommentDoesntExistException, Status438LikeDoesntExistException, Status419UserException;
+    void deleteLikeFromComment(JwtUser jwtUser, Long commentID)
+            throws Status439CommentDoesntExistException,
+            Status438LikeDoesntExistException,
+            Status419UserException;
 }

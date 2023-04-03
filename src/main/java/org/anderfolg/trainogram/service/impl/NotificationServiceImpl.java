@@ -2,15 +2,12 @@ package org.anderfolg.trainogram.service.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.anderfolg.trainogram.entities.DTO.NotificationDto;
 import org.anderfolg.trainogram.entities.Notification;
 import org.anderfolg.trainogram.entities.NotificationType;
 import org.anderfolg.trainogram.entities.User;
 import org.anderfolg.trainogram.repo.NotificationRepository;
 import org.anderfolg.trainogram.service.NotificationService;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

@@ -15,11 +15,4 @@ public class JwtUserFactory {
                 true,
                 List.of(user.getRole()));
     }
-/*    private static List<GrantedAuthority> mapToGrantedAuthorities(Role role){
-*//*        return userRoles.stream()
-                .map(role ->
-                        new SimpleGrantedAuthority("ROLE_"+role.toString())
-                ).collect(Collectors.toList());*//*
-        return List.of(new SimpleGrantedAuthority("ROLE_"+role.getAuthority()));
-    }*/
 }

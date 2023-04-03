@@ -1,5 +1,6 @@
 package org.anderfolg.trainogram.controllers;
 
+import lombok.extern.slf4j.Slf4j;
 import org.anderfolg.trainogram.entities.User;
 import org.anderfolg.trainogram.entities.chatEntities.ChatRoom;
 import org.anderfolg.trainogram.entities.chatEntities.Message;
@@ -10,21 +11,17 @@ import org.anderfolg.trainogram.websocket.MessageDecoder;
 import org.anderfolg.trainogram.websocket.MessageEncoder;
 import org.anderfolg.trainogram.websocket.SpringContext;
 
+import javax.websocket.*;
+import javax.websocket.server.PathParam;
+import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
-
-import javax.websocket.EncodeException;
-import javax.websocket.OnClose;
-import javax.websocket.OnError;
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
-import javax.websocket.server.PathParam;
-import javax.websocket.server.ServerEndpoint;
 @ServerEndpoint(value = "/chat/{chatId}", decoders = MessageDecoder.class, encoders = MessageEncoder.class)
+@Slf4j
 public class ChatEndpoint {
     private Session session;
 
@@ -41,7 +38,7 @@ public class ChatEndpoint {
 
 
     private static final Set<ChatEndpoint> chatEndpoints = new CopyOnWriteArraySet<>();
-    private static HashMap<String, Long> users = new HashMap<>();
+    private static final HashMap<String, Long> users = new HashMap<>();
 
     public ChatEndpoint(){
         this.chatRoomService =  SpringContext.getApplicationContext().getBean(ChatRoomService.class);
@@ -87,31 +84,43 @@ public class ChatEndpoint {
 
     @OnClose
     public void onClose() {
-
+        Long chatId = users.remove(session.getId());
         chatEndpoints.remove(this);
-
+        if (chatId != null) {
+            ChatRoom chatRoom = chatRoomService.getChatRoomByChatId(chatId);
+            if (chatRoom != null) {
+                List<User> remainingUsers = chatRoom.getRecipients().stream()
+                        .filter(user -> chatEndpoints.stream()
+                                .anyMatch(endpoint -> endpoint.currentUser.equals(user))).toList();
+                if (remainingUsers.isEmpty()) {
+                    messageRepository.deleteAllByChatId(chatId);
+                    chatRoomService.deleteChatRoomById(chatId);
+                }
+            }
+        }
     }
 
     @OnError
     public void onError(Throwable throwable) {
-        System.out.println(throwable.getMessage());
-        // TODO: 28/2/23 Do error handling here
+        log.error("Error in ChatEndpoint: " + throwable.getMessage());
+
+
+
     }
 
     private static void broadcast(Message  message) {
+        Object lock = new Object();
 
-        // TODO: 27/2/23 local var synced?
         chatEndpoints.forEach(endpoint -> {
-            synchronized (endpoint) {
-                if (endpoint.currentChatRoom.getChatId().equals(message.getChatId())) {
-                    if (message.getRecipient().equals(endpoint.currentUser)){
+            synchronized (lock) {
+                if (endpoint.currentChatRoom.getChatId().equals(message.getChatId()) && (message.getRecipient().equals(endpoint.currentUser))){
                         try {
                             endpoint.session.getBasicRemote().
                                     sendObject(message);
                         } catch (IOException | EncodeException e) {
                             e.printStackTrace();
                         }
-                    }}
+                    }
             }
         });
     }

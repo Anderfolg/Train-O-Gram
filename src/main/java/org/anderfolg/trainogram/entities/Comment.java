@@ -20,7 +20,7 @@ public class Comment {
     private Long id;
 
     @Column(nullable = false)
-    private String comment;
+    private String content;
 
     @ManyToOne()
     @JsonIgnore
@@ -40,8 +40,8 @@ public class Comment {
     private ContentType type;
 
 
-    public Comment( String comment, User user, Post post) {
-        this.comment = comment;
+    public Comment( String content, User user, Post post) {
+        this.content = content;
         this.user = user;
         this.post = post;
         this.type = ContentType.COMMENT;

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/likev2")
+@RequestMapping("/api/likes")
 public class LikeV2Controller {
     private final LikeToPostService likeToPostService;
     private final LikeToCommentService likeToCommentService;

@@ -44,8 +44,6 @@ public class PostController {
     public ResponseEntity<ApiResponse> addPost( @RequestParam @Valid String description,
                                                 JwtUser jwtUser,
                                                 @RequestPart("image") MultipartFile image) throws Status435StorageException, Status432InvalidFileNameException, Status430InvalidFileException, Status419UserException {
-        /*jwtTokenProvider.getAuthentication(token);
-        User user = userService.findByUsername(jwtTokenProvider.getUsername(token));*/
         postService.addPost(description, jwtUser, image);
         return new ResponseEntity<>(new ApiResponse(true, "Post has been added"), HttpStatus.CREATED);
     }
@@ -55,8 +53,6 @@ public class PostController {
                                                   @PathVariable("postID") Long postId,
                                                   JwtUser jwtUser,
                                                   @RequestPart("image") MultipartFile image) throws Status436PostDoesntExistException, Status435StorageException, Status432InvalidFileNameException, Status430InvalidFileException, Status419UserException {
-        /*jwtTokenProvider.getAuthentication(token);
-        User user = userService.findByUsername(jwtTokenProvider.getUsername(token));*/
         postService.updatePost(postId, description, jwtUser, image);
         return new ResponseEntity<>(new ApiResponse(true, "Post has been updated"), HttpStatus.OK);
     }
@@ -64,8 +60,6 @@ public class PostController {
     @DeleteMapping("/{postID}")
     public ResponseEntity<ApiResponse> deletePost(@PathVariable("postID") final Long postID,
                                                   JwtUser jwtUser) throws Status419UserException, Status436PostDoesntExistException {
-        /*jwtTokenProvider.getAuthentication(token);
-        User user = userService.findByUsername(jwtTokenProvider.getUsername(token));*/
         postService.deletePost(postID, jwtUser);
         return new ResponseEntity<>(new ApiResponse(true, "Post has been deleted"), HttpStatus.OK);
     }

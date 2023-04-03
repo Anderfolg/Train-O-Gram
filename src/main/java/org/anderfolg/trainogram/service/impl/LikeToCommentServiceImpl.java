@@ -42,7 +42,6 @@ public class LikeToCommentServiceImpl implements LikeToCommentService {
         log.info("getting all likes to comment by user {}", user.getUsername());
         return likeV2repository.findAllByContentTypeAndUser(ContentType.COMMENT, user);
     }
-    // TODO: 28/2/23 use facade
     @Override
     public void addLikeToComment( JwtUser jwtUser, Long commentID ) throws Status439CommentDoesntExistException, Status440LikeAlreadyExistsException, Status419UserException {
         User user = userService.findUserById(jwtUser.id());
@@ -56,9 +55,6 @@ public class LikeToCommentServiceImpl implements LikeToCommentService {
                     .recipientId(comment.getUser().getId())
                     .message("Your comment has been liked by :"+user.getUsername())
                     .build();
-/*            notificationDto.setContentId(commentID);
-            notificationDto.setRecipientId(comment.getUser().getId());
-            notificationDto.setMessage("Your comment has been liked by :"+user.getUsername());*/
             notificationService.createNotification(notificationDto, comment.getUser(), NotificationType.LIKE);
         }
         else {

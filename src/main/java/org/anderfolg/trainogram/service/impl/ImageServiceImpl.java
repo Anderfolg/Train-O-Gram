@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Objects;
+
 @Slf4j
 @Service
 public class ImageServiceImpl implements ImageService {
@@ -38,7 +40,7 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public String uploadImage( MultipartFile file, String username ) throws Status435StorageException, Status432InvalidFileNameException, Status430InvalidFileException {
-        String filename = StringUtils.cleanPath(file.getOriginalFilename());
+        String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
 
         log.info("storing file {}", filename);
 

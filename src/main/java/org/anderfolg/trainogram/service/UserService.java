@@ -11,15 +11,22 @@ import java.util.List;
 public interface UserService {
     User findByUsername( String username);
 
-    User createUser( UserDto userDto) throws Status419UserException, Status420UsernameAlreadyExistsException, Status427EmailAlreadyExistsException;
+    User createUser( UserDto userDto)
+            throws Status419UserException,
+            Status420UsernameAlreadyExistsException,
+            Status427EmailAlreadyExistsException;
 
     void deleteUser(Long id);
 
-    User updateUser(UserDto userDto, Long id) throws Status419UserException, Status420UsernameAlreadyExistsException, Status427EmailAlreadyExistsException;
+    User updateUser(UserDto userDto, Long id)
+            throws Status419UserException,
+            Status420UsernameAlreadyExistsException,
+            Status427EmailAlreadyExistsException;
 
     List<User> findAllUsers();
 
-    User findUserById(Long id) throws Status419UserException;
+    User findUserById(Long id)
+            throws Status419UserException;
 
     User findAuthenticatedUser();
     User findAndAuthenticateUserFromToken(String token);

@@ -5,10 +5,8 @@ import org.anderfolg.trainogram.entities.Upload;
 import org.anderfolg.trainogram.exceptions.Status430InvalidFileException;
 import org.anderfolg.trainogram.exceptions.Status432InvalidFileNameException;
 import org.anderfolg.trainogram.exceptions.Status435StorageException;
-import org.anderfolg.trainogram.repo.UploadRepository;
 import org.anderfolg.trainogram.service.StorageService;
 import org.apache.commons.io.FilenameUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -20,27 +18,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
 @Slf4j
 public class StorageServiceImpl implements StorageService {
-    private final UploadRepository uploadRepository;
     @Value("${upload.path}")
     private String uploadDirectory;
 
 
-    @Value("${file.path.prefix}")
-    private String filePathPrefix;
-
-    @Autowired
-    public StorageServiceImpl( UploadRepository uploadRepository ) {
-        this.uploadRepository = uploadRepository;
-    }
-
     @Override
     public Upload saveFile( MultipartFile file, String username ) throws Status430InvalidFileException, Status432InvalidFileNameException, Status435StorageException {
-        String filename = StringUtils.cleanPath(file.getOriginalFilename());
+        String filename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
 
         log.info("storing file{}", filename);
 

@@ -13,7 +13,6 @@ import org.anderfolg.trainogram.security.jwt.JwtUser;
 import org.anderfolg.trainogram.service.FollowService;
 import org.anderfolg.trainogram.service.NotificationService;
 import org.anderfolg.trainogram.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -96,7 +95,4 @@ public class FollowServiceImpl implements FollowService {
         return new FollowDto(follow);
     }
 
-    public static Follow getFollowFromDto(FollowDto followDto) {
-        return new Follow(followDto);
-    }
 }

@@ -75,12 +75,6 @@ public class JwtTokenProvider {
         }
         return null;
     }
-    /*public String resolve(String bearerToken){
-        if ( bearerToken != null){
-            return bearerToken.substring(7);
-        }
-        return null;
-    }*/
     public boolean validateToken(String token){
         try{
             Jws<Claims> claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
@@ -89,10 +83,4 @@ public class JwtTokenProvider {
             throw new Status441JwtAuthenticationException("JWT token is expired or invalid");
         }
     }
-
-/*    private List<String> getRoleName(List<Role> userRoles){
-        List<String> result = new ArrayList<>();
-        userRoles.forEach(role -> result.add(role.toString()));
-        return result;
-    }*/
 }

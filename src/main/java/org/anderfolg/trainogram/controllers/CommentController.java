@@ -37,15 +37,11 @@ public class CommentController {
     }
 
     @PostMapping("/add/{postID}")
-    public ResponseEntity<ApiResponse> addComment( @RequestParam String content,
-                                                   @PathVariable ("postID") Long id,
-                                                   JwtUser jwtUser ) throws Status436PostDoesntExistException, Status419UserException {
-        /*jwtTokenProvider.getAuthentication(token);
-        User user = userService.findByUsername(jwtTokenProvider.getUsername(token));*/
-        /*Post post  = postService.findPostById(commentaryDto.getPostId());*/
+    public ResponseEntity<String> addComment( @RequestParam String content,
+                                              @PathVariable ("postID") Long id,
+                                              JwtUser jwtUser ) throws Status436PostDoesntExistException, Status419UserException {
         commentService.addComment(content, jwtUser, id);
-        // TODO: 27/2/23 simplify methods to return only responsible body with content which FE requires
-        return new ResponseEntity<>(new ApiResponse(true, "Comment has been added"), HttpStatus.CREATED);
+        return ResponseEntity.ok("Comment has been added");
     }
 
     @PutMapping("/update/{comID}")
@@ -57,12 +53,9 @@ public class CommentController {
     }
 
     @DeleteMapping("/{comID}")
-    public ResponseEntity<ApiResponse> deleteComment(@PathVariable("comID") final Long comId,
+    public ResponseEntity<String> deleteComment(@PathVariable("comID") final Long comId,
                                                      JwtUser jwtUser) throws Status419UserException {
-        /*jwtTokenProvider.getAuthentication(token);
-        User user = userService.findByUsername(jwtTokenProvider.getUsername(token));*/
         commentService.deleteComment(comId, jwtUser);
-        // TODO: 27/2/23 simplify responses and do not return body on delete mapping
-        return new ResponseEntity<>(new ApiResponse(true, "Comment has been deleted"), HttpStatus.OK);
+        return ResponseEntity.ok("Comment has been deleted");
     }
 }

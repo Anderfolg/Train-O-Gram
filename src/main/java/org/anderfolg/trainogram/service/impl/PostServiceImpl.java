@@ -12,7 +12,6 @@ import org.anderfolg.trainogram.security.jwt.JwtUser;
 import org.anderfolg.trainogram.service.ImageService;
 import org.anderfolg.trainogram.service.PostService;
 import org.anderfolg.trainogram.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -66,9 +65,10 @@ public class PostServiceImpl implements PostService {
     @Transactional
     @Override
     public void updatePost(Long postID, String description, JwtUser jwtUser, MultipartFile file ) throws Status435StorageException, Status432InvalidFileNameException, Status430InvalidFileException, Status436PostDoesntExistException, Status419UserException {
-        if ( postRepository.existsById(postID) && postRepository.findById(postID).isPresent()){
+        Optional<Post> optionalPost = postRepository.findById(postID);
+        if (optionalPost.isPresent()){
             User user = userService.findUserById(jwtUser.id());
-            Post post = postRepository.findById(postID).get();
+            Post post = optionalPost.get();
             post.setImageName(System.currentTimeMillis() + "_" + file.getOriginalFilename());
             post.setImageUrl(imageService.uploadImage(file, user.getUsername()));
             post.setDescription(description);
@@ -79,15 +79,18 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public void deletePost( Long id, JwtUser jwtUser ) throws Status419UserException, Status436PostDoesntExistException {
+    public void deletePost(Long id, JwtUser jwtUser) throws Status419UserException, Status436PostDoesntExistException {
         User user = userService.findUserById(jwtUser.id());
-        if ( postRepository.findById(id).isPresent() ){
-            imageService.deleteImage(postRepository.findById(id).get().getImageName());
+        Optional<Post> post = postRepository.findById(id);
+        if (post.isPresent()) {
+            imageService.deleteImage(post.get().getImageName());
             postRepository.deleteById(id);
             log.info("deleting post from user: {}", user.getUsername());
+        } else {
+            throw new Status436PostDoesntExistException("Post was not found");
         }
-        else throw new Status436PostDoesntExistException("Post was not found");
     }
+
 
     @Override
     public Long findLatestPostId() {
@@ -125,15 +128,6 @@ public class PostServiceImpl implements PostService {
         postDto.setDescription(post.getDescription());
         return postDto;
     }
-
-    /*public Post getPostFromDto(PostDto postDto, User user, MultipartFile image) throws Status435StorageException, Status432InvalidFileNameException, Status430InvalidFileException {
-        Post post = new Post();
-        post.setImageName(System.currentTimeMillis() + "_" + image.getOriginalFilename());
-        post.setImageUrl(imageService.uploadImage(image, user.getUsername()));
-        post.setDescription(postDto.getDescription());
-        post.setUser(user);
-        return post;
-    }*/
     public Post getPostFromRequest(String description, User user, MultipartFile image) throws Status435StorageException, Status432InvalidFileNameException, Status430InvalidFileException {
         Post post = new Post();
         post.setImageName(imageService.uploadImage(image, user.getUsername()));

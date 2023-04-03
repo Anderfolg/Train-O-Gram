@@ -1,6 +1,5 @@
 package org.anderfolg.trainogram.security;
 
-import org.anderfolg.trainogram.entities.Role;
 import org.anderfolg.trainogram.security.jwt.JwtConfigurer;
 import org.anderfolg.trainogram.security.jwt.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final static String LOGIN_ENDPOINT = "/api/auth/**";
     @Autowired
     public SecurityConfig(JwtTokenProvider jwtTokenProvider){
         this.jwtTokenProvider = jwtTokenProvider;

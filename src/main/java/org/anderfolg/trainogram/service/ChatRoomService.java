@@ -9,10 +9,16 @@ import java.util.List;
 
 public interface ChatRoomService {
 
-    void deleteChatRoom(Long chatId, JwtUser jwtUser) throws Status419UserException;
+    void deleteChatRoom(Long chatId, JwtUser jwtUser)
+            throws Status419UserException;
+    void deleteChatRoomById(Long chatId);
 
-    void addUserToChatRoom(Long chatId, JwtUser jwtUser, String username) throws Status419UserException;
-    Long createChatRoom( JwtUser jwtUser, List<String> usernames) throws Status419UserException;
+    void addUserToChatRoom(Long chatId, JwtUser jwtUser, String username)
+            throws Status419UserException;
+    Long createChatRoom( JwtUser jwtUser, List<String> usernames)
+            throws Status419UserException;
 
     ChatRoom getChatRoomByChatIdAndSender(Long chatId, User sender);
+
+    ChatRoom getChatRoomByChatId( Long chatId );
 }

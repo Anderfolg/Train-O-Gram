@@ -1,6 +1,5 @@
 package org.anderfolg.trainogram.controllers;
 
-import io.jsonwebtoken.Jwt;
 import org.anderfolg.trainogram.entities.DTO.UserDto;
 import org.anderfolg.trainogram.entities.User;
 import org.anderfolg.trainogram.exceptions.Status427EmailAlreadyExistsException;
@@ -52,7 +51,7 @@ public class UserController {
 
     @GetMapping("/checkAdmin")
     public ResponseEntity<String> checkAdmin( JwtUser jwtUser ){
-        String response = jwtUser.username();
+        String response = jwtUser.getUsername();
         return ResponseEntity.ok(response);
     }
 }

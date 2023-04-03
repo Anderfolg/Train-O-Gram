@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -37,7 +36,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public List<CommentDto> findCommentsByPost(Post post) {
         List<Comment> commentList = commentRepository.findAllByPost(post);
-        List<CommentDto> comments = commentList.stream().map(this::getDtoFromComment).collect(Collectors.toList());
+        List<CommentDto> comments = commentList.stream().map(this::getDtoFromComment).toList();
         log.info("getting all comments from post with ID: {}", post.getId());
         return comments;
     }
@@ -58,12 +57,11 @@ public class CommentServiceImpl implements CommentService {
         Post post = postService.findPostById(postId);
 
         Comment comment = Comment.builder()
-                .comment(content)
+                .content(content)
                 .user(user)
                 .post(post)
                 .build();
 
-        // TODO: 28/2/23 use @Builder and move to separate methods
         commentRepository.save(comment);
 
         NotificationDto notificationDto = NotificationDto.builder()
@@ -92,7 +90,7 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = commentRepository.findById(comID)
                 .orElseThrow(() -> new Status439CommentDoesntExistException("Could not find comment"));
         User user = userService.findUserById(jwtUser.id());
-        comment.setComment(content);
+        comment.setContent(content);
         commentRepository.save(comment);
         log.info("updating comment by user {}", user.getUsername());
     }
@@ -101,10 +99,4 @@ public class CommentServiceImpl implements CommentService {
         return new CommentDto(comment);
     }
 
-    /*public static Comment getCommentFromDto(CommentDto commentDto, User user, Post post) {
-        return new Comment(commentDto, user, post);
-    }*/
-    public static Comment getCommentFromRequest(String content, User user, Post post){
-        return new Comment(content, user, post);
-    }
 }

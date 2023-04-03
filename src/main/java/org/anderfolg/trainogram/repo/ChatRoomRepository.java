@@ -11,4 +11,8 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
     Optional<ChatRoom> findTopByOrderByChatIdDesc();
 
     ChatRoom findChatRoomByChatIdAndSender(Long chatId, User sender);
+
+    ChatRoom findChatRoomByChatId( Long chatId );
+
+    void deleteChatRoomByChatId(Long chatId);
 }

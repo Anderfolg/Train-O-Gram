@@ -10,11 +10,19 @@ import org.anderfolg.trainogram.security.jwt.JwtUser;
 import java.util.List;
 
 public interface LikeToPostService {
-    List<Like> findAllLikesByPost( Long id) throws Status436PostDoesntExistException;
+    List<Like> findAllLikesByPost( Long id)
+            throws Status436PostDoesntExistException;
 
-    List<Like> findAllLikesByUser( JwtUser jwtUser) throws Status419UserException;
-    void addLikeToPost(JwtUser jwtUser, Long postID) throws Status440LikeAlreadyExistsException, Status436PostDoesntExistException, Status419UserException;
+    List<Like> findAllLikesByUser( JwtUser jwtUser)
+            throws Status419UserException;
+    void addLikeToPost(JwtUser jwtUser, Long postID)
+            throws Status440LikeAlreadyExistsException,
+            Status436PostDoesntExistException,
+            Status419UserException;
 
-    void deleteLikeFromPost( JwtUser jwtUser, Long postID) throws Status438LikeDoesntExistException, Status436PostDoesntExistException, Status419UserException;
+    void deleteLikeFromPost( JwtUser jwtUser, Long postID)
+            throws Status438LikeDoesntExistException,
+            Status436PostDoesntExistException,
+            Status419UserException;
 
 }
