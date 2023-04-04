@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 @Builder
 public class User {
 
-    // TODO: 28/2/23 use cascades for related entities
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
