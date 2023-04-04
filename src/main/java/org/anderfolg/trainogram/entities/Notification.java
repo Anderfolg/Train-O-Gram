@@ -20,7 +20,7 @@ public class Notification {
     @Column(name = "messages")
     private String message;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "recepient_id", referencedColumnName = "id")
     private User user;
     @Column(nullable = false)

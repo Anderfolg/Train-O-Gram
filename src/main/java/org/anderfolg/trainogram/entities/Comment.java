@@ -22,7 +22,7 @@ public class Comment {
     @Column(nullable = false)
     private String content;
 
-    @ManyToOne()
+    @ManyToOne(cascade = CascadeType.ALL)
     @JsonIgnore
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;

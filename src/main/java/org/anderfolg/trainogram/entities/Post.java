@@ -28,7 +28,7 @@ public class Post {
 
     private String description;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JsonIgnore
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
