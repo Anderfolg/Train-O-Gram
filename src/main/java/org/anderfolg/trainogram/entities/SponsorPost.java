@@ -30,6 +30,7 @@ public class SponsorPost {
     @Convert(converter = ContentConverter.FieldConverter.class)
     private ContentType type;
 
+    //  TODO (Bogdan O.) 7/4/23: needs to be removed
     public SponsorPost( Post sponsoredPost, User sponsor, ContentType type ) {
         this.sponsoredPost = sponsoredPost;
         this.sponsor = sponsor;

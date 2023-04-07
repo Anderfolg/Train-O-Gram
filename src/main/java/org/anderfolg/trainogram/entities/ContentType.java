@@ -45,7 +45,7 @@ public enum ContentType {
     }
 }
 
-
+//  TODO (Bogdan O.) 7/4/23: make it nested
 class ContentConverter {
     @Converter(autoApply = true)
     public static class FieldConverter implements AttributeConverter<ContentType,Integer> {

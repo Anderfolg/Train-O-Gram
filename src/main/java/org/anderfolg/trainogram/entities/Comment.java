@@ -40,6 +40,7 @@ public class Comment {
     private ContentType type;
 
 
+    //  TODO (Bogdan O.) 7/4/23: constructor is unused
     public Comment( String content, User user, Post post) {
         this.content = content;
         this.user = user;

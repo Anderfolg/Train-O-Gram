@@ -17,6 +17,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/sponsor-post")
+//  TODO (Bogdan O.) 7/4/23: remove CRUD namings
+//  TODO (Bogdan O.) 7/4/23: use pagination for "getAll" method types
 public class SponsoredPostController {
     private final SponsorPostService sponsorPostService;
 
@@ -48,6 +50,7 @@ public class SponsoredPostController {
         sponsorPostService.deleteSponsorPost( jwtUser, postID);
         return new ResponseEntity<>(new ApiResponse(true, "Post has been deleted"), HttpStatus.OK);
     }
+
     @GetMapping(value = "/all")
     public ResponseEntity<List<Post>> getAll() {
         List<Post> sponsoredPosts= sponsorPostService.listSponsoredPosts();

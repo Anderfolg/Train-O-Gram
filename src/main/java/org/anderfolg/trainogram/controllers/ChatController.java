@@ -11,6 +11,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/chat-controller/")
+//  TODO (Bogdan O.) 7/4/23: remove CRUD namings
 public class ChatController {
     private final ChatRoomService chatRoomService;
 

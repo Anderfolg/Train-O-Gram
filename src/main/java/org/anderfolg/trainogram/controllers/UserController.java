@@ -15,6 +15,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/users")
+//  TODO (Bogdan O.) 7/4/23: use pagination for "getAll" method types
+//  TODO (Bogdan O.) 7/4/23: remove CRUD naming
 public class UserController {
     private final UserService userService;
 
@@ -23,17 +25,20 @@ public class UserController {
         this.userService = userService;
     }
 
+    //  TODO (Bogdan O.) 7/4/23: remove additional nesting
     @GetMapping("/all")
     public ResponseEntity<List<User>> allUsers(){
         List<User> response = userService.findAllUsers();
         return ResponseEntity.ok(response);
     }
-    
+
+    //  TODO (Bogdan O.) 7/4/23: can be moved to AuthController
     @PostMapping("/register")
     public ResponseEntity<User> saveUser( @RequestBody UserDto userDto ) throws Status420UsernameAlreadyExistsException, Status419UserException, Status427EmailAlreadyExistsException {
         User newUser =  userService.createUser(userDto);
         return ResponseEntity.ok(newUser);
     }
+
     @PutMapping("/update/{id}")
     public ResponseEntity<User> updateUser( @RequestBody UserDto userDto ,@PathVariable Long id) throws Status420UsernameAlreadyExistsException, Status419UserException, Status427EmailAlreadyExistsException {
         User newUser =  userService.updateUser(userDto, id);
@@ -44,11 +49,13 @@ public class UserController {
         User user = userService.findUserById(id);
         return ResponseEntity.ok(user);
     }
+    //  TODO (Bogdan O.) 7/4/23: remove CRUD naming
     @DeleteMapping("/delete/{id}")
     public void deleteUser(@PathVariable Long id){
         userService.deleteUser(id);
     }
 
+    //  TODO (Bogdan O.) 7/4/23: delete it
     @GetMapping("/checkAdmin")
     public ResponseEntity<String> checkAdmin( JwtUser jwtUser ){
         String response = jwtUser.getUsername();

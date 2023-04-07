@@ -27,7 +27,6 @@ public class ChatEndpoint {
 
     private User currentUser;
 
-
     private final ChatRoomService chatRoomService;
 
     private final UserService userService;
@@ -83,6 +82,7 @@ public class ChatEndpoint {
     }
 
     @OnClose
+    //  TODO (Bogdan O.) 7/4/23: instead of multiple nesting - better use Optionals for getting objects and handle "not found" exceptions
     public void onClose() {
         Long chatId = users.remove(session.getId());
         chatEndpoints.remove(this);
@@ -101,6 +101,7 @@ public class ChatEndpoint {
     }
 
     @OnError
+    //  TODO (Bogdan O.) 7/4/23: throw exceptions on every major error
     public void onError(Throwable throwable) {
         log.error("Error in ChatEndpoint: " + throwable.getMessage());
 

@@ -19,6 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/comment")
+//  TODO (Bogdan O.) 7/4/23: remove CRUD namings
 public class CommentController {
     private final CommentService commentService;
     private final PostService postService;

@@ -19,6 +19,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/post")
+//  TODO (Bogdan O.) 7/4/23: remove CRUD namings
+//  TODO (Bogdan O.) 7/4/23: use pagination for "getAll" method types
 public class PostController {
     private final PostService postService;
 

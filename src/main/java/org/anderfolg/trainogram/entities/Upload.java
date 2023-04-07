@@ -35,6 +35,7 @@ public class Upload {
     @CreatedDate
     private LocalDateTime createDate;
 
+    //  TODO (Bogdan O.) 7/4/23: needs to be removed
     public Upload( String newFileName, String fileUrl, String username, String contentType ) {
         this.fileName = newFileName;
         this.url = fileUrl;

@@ -15,6 +15,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/likes")
+//  TODO (Bogdan O.) 7/4/23: remove CRUD namings
+//  TODO (Bogdan O.) 7/4/23: use pagination for "getAll" method types
 public class LikeV2Controller {
     private final LikeToPostService likeToPostService;
     private final LikeToCommentService likeToCommentService;

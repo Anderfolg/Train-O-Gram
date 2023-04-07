@@ -15,6 +15,7 @@ public class FollowDto {
     private User follower;
     private User following;
 
+    //  TODO (Bogdan O.) 7/4/23: constructors can be removed because getters are used btw
     public FollowDto( Follow follow) {
         this.setFollower(follow.getFollower());
         this.setFollowing(follow.getFollowing());

@@ -12,6 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class ChatRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,7 +28,4 @@ public class ChatRoom {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<User> recipients;
 
-    public ChatRoom() {
-
-    }
 }

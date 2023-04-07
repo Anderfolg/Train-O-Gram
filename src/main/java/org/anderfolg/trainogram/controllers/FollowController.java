@@ -16,6 +16,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/follow")
+//  TODO (Bogdan O.) 7/4/23: remove CRUD namings
+//  TODO (Bogdan O.) 7/4/23: use pagination for "getAll" method types
 public class FollowController {
     private final FollowService followService;
     private final UserService userService;
