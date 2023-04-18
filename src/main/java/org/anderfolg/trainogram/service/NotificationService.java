@@ -1,8 +1,6 @@
 package org.anderfolg.trainogram.service;
 
-import org.anderfolg.trainogram.entities.ContentType;
-import org.anderfolg.trainogram.entities.DTO.NotificationDto;
-import org.anderfolg.trainogram.entities.Notification;
+import org.anderfolg.trainogram.entities.dto.NotificationDto;
 import org.anderfolg.trainogram.entities.NotificationType;
 import org.anderfolg.trainogram.entities.User;
 

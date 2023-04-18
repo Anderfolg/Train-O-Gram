@@ -1,7 +1,7 @@
 package org.anderfolg.trainogram.controllers;
 
 import lombok.AllArgsConstructor;
-import org.anderfolg.trainogram.entities.DTO.AuthRequestDTO;
+import org.anderfolg.trainogram.entities.dto.AuthRequestDTO;
 import org.anderfolg.trainogram.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

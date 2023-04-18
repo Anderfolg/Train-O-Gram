@@ -1,8 +1,6 @@
 package org.anderfolg.trainogram.entities;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 
@@ -11,7 +9,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Data
+@Setter
+@ToString
 @RequiredArgsConstructor
 public class Upload {
     @Id
@@ -35,7 +34,6 @@ public class Upload {
     @CreatedDate
     private LocalDateTime createDate;
 
-    //  TODO (Bogdan O.) 7/4/23: needs to be removed
     public Upload( String newFileName, String fileUrl, String username, String contentType ) {
         this.fileName = newFileName;
         this.url = fileUrl;

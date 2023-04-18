@@ -2,8 +2,8 @@ package org.anderfolg.trainogram.service.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.anderfolg.trainogram.entities.DTO.FollowDto;
-import org.anderfolg.trainogram.entities.DTO.NotificationDto;
+import org.anderfolg.trainogram.entities.dto.FollowDto;
+import org.anderfolg.trainogram.entities.dto.NotificationDto;
 import org.anderfolg.trainogram.entities.Follow;
 import org.anderfolg.trainogram.entities.NotificationType;
 import org.anderfolg.trainogram.entities.User;

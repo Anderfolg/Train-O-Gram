@@ -1,6 +1,6 @@
 package org.anderfolg.trainogram.service;
 
-import org.anderfolg.trainogram.entities.DTO.FollowDto;
+import org.anderfolg.trainogram.entities.dto.FollowDto;
 import org.anderfolg.trainogram.entities.User;
 import org.anderfolg.trainogram.exceptions.Status419UserException;
 import org.anderfolg.trainogram.security.jwt.JwtUser;

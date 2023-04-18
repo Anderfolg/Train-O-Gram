@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.springframework.security.core.GrantedAuthority;
+
+import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 
 
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
@@ -46,5 +48,23 @@ public enum Role implements GrantedAuthority{
 
     public Integer getId() {
         return id;
+    }
+    public static class RoleConverter {
+        private RoleConverter(){
+            throw new IllegalStateException("Utility class");
+        }
+
+        @Converter(autoApply = true)
+        public static class FieldConverter implements AttributeConverter<Role,Integer> {
+            @Override
+            public Integer convertToDatabaseColumn( Role role ) {
+                return role.getId();
+            }
+
+            @Override
+            public Role convertToEntityAttribute( Integer id ) {
+                return Role.fromId(id);
+            }
+        }
     }
 }

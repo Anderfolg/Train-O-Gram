@@ -3,14 +3,13 @@ package org.anderfolg.trainogram.service.impl;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.anderfolg.trainogram.entities.Comment;
-import org.anderfolg.trainogram.entities.DTO.CommentDto;
-import org.anderfolg.trainogram.entities.DTO.NotificationDto;
+import org.anderfolg.trainogram.entities.dto.CommentDto;
+import org.anderfolg.trainogram.entities.dto.NotificationDto;
 import org.anderfolg.trainogram.entities.NotificationType;
 import org.anderfolg.trainogram.entities.Post;
 import org.anderfolg.trainogram.entities.User;
 import org.anderfolg.trainogram.exceptions.Status419UserException;
-import org.anderfolg.trainogram.exceptions.Status436PostDoesntExistException;
-import org.anderfolg.trainogram.exceptions.Status439CommentDoesntExistException;
+import org.anderfolg.trainogram.exceptions.Status436DoesntExistException;
 import org.anderfolg.trainogram.repo.CommentRepository;
 import org.anderfolg.trainogram.security.jwt.JwtUser;
 import org.anderfolg.trainogram.service.CommentService;
@@ -42,15 +41,15 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Comment findCommentById( Long commentID ) throws Status439CommentDoesntExistException {
+    public Comment findCommentById( Long commentID ) throws Status436DoesntExistException {
         Optional<Comment> comment = commentRepository.findById(commentID);
         if ( comment.isEmpty() )
-            throw new Status439CommentDoesntExistException("Comment id is invalid " + commentID);
+            throw new Status436DoesntExistException("Comment id is invalid " + commentID);
         return comment.get();
     }
 
     @Override
-    public void addComment(String content, JwtUser jwtUser, Long postId) throws Status436PostDoesntExistException, Status419UserException {
+    public void addComment(String content, JwtUser jwtUser, Long postId) throws Status436DoesntExistException, Status419UserException {
 
         User user = userService.findUserById(jwtUser.id());
 
@@ -86,9 +85,9 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void updateComment(String content, JwtUser jwtUser, Long comID) throws Status439CommentDoesntExistException, Status419UserException {
+    public void updateComment(String content, JwtUser jwtUser, Long comID) throws Status436DoesntExistException, Status419UserException {
         Comment comment = commentRepository.findById(comID)
-                .orElseThrow(() -> new Status439CommentDoesntExistException("Could not find comment"));
+                .orElseThrow(() -> new Status436DoesntExistException("Could not find comment"));
         User user = userService.findUserById(jwtUser.id());
         comment.setContent(content);
         commentRepository.save(comment);

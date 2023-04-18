@@ -10,23 +10,22 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/chat-controller/")
-//  TODO (Bogdan O.) 7/4/23: remove CRUD namings
+@RequestMapping("/api/chats")
 public class ChatController {
     private final ChatRoomService chatRoomService;
 
 
-    @PostMapping("/create-chat")
+    @PostMapping("/")
     public Long createChat( @RequestParam List<String> usernames, JwtUser jwtUser ) throws Status419UserException {
         return chatRoomService.createChatRoom(jwtUser,usernames);
     }
 
-    @PostMapping("/add-user")
+    @PostMapping("/users")
     public void addUserToChat( @RequestParam Long chatId, @RequestParam String username, JwtUser jwtUser ) throws Status419UserException {
         chatRoomService.addUserToChatRoom(chatId,jwtUser,username);
     }
 
-    @DeleteMapping("/delete-chat")
+    @DeleteMapping("/")
     public void deleteChat( @RequestParam Long chatId, JwtUser jwtUser ) throws Status419UserException {
         chatRoomService.deleteChatRoom(chatId,jwtUser);
     }

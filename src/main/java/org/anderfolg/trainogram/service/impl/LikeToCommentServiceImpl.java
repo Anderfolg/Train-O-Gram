@@ -3,11 +3,10 @@ package org.anderfolg.trainogram.service.impl;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.anderfolg.trainogram.entities.*;
-import org.anderfolg.trainogram.entities.DTO.NotificationDto;
+import org.anderfolg.trainogram.entities.dto.NotificationDto;
 import org.anderfolg.trainogram.exceptions.Status419UserException;
-import org.anderfolg.trainogram.exceptions.Status438LikeDoesntExistException;
-import org.anderfolg.trainogram.exceptions.Status439CommentDoesntExistException;
-import org.anderfolg.trainogram.exceptions.Status440LikeAlreadyExistsException;
+import org.anderfolg.trainogram.exceptions.Status420AlreadyExistsException;
+import org.anderfolg.trainogram.exceptions.Status436DoesntExistException;
 import org.anderfolg.trainogram.repo.LikeV2repository;
 import org.anderfolg.trainogram.security.jwt.JwtUser;
 import org.anderfolg.trainogram.service.CommentService;
@@ -30,7 +29,7 @@ public class LikeToCommentServiceImpl implements LikeToCommentService {
 
 
     @Override
-    public List<Like> findAllLikesByComment( Long commentID ) throws Status439CommentDoesntExistException {
+    public List<Like> findAllLikesByComment( Long commentID ) throws Status436DoesntExistException {
         Comment comment = commentService.findCommentById(commentID);
         log.info("getting all likes from comment by {}", comment.getUser());
         return likeV2repository.findAllByContentIdAndContentType(comment.getId(), ContentType.COMMENT);
@@ -43,7 +42,7 @@ public class LikeToCommentServiceImpl implements LikeToCommentService {
         return likeV2repository.findAllByContentTypeAndUser(ContentType.COMMENT, user);
     }
     @Override
-    public void addLikeToComment( JwtUser jwtUser, Long commentID ) throws Status439CommentDoesntExistException, Status440LikeAlreadyExistsException, Status419UserException {
+    public void addLikeToComment( JwtUser jwtUser, Long commentID ) throws Status436DoesntExistException, Status420AlreadyExistsException, Status419UserException {
         User user = userService.findUserById(jwtUser.id());
         Comment comment = commentService.findCommentById(commentID);
         if ( !likeV2repository.existsByUserAndContentId(user,commentID) ){
@@ -58,14 +57,14 @@ public class LikeToCommentServiceImpl implements LikeToCommentService {
             notificationService.createNotification(notificationDto, comment.getUser(), NotificationType.LIKE);
         }
         else {
-            throw new Status440LikeAlreadyExistsException("Like was already added");
+            throw new Status420AlreadyExistsException("Like was already added");
         }
 
     }
 
     @Override
     @Transactional
-    public void deleteLikeFromComment( JwtUser jwtUser, Long commentID ) throws Status439CommentDoesntExistException, Status438LikeDoesntExistException, Status419UserException {
+    public void deleteLikeFromComment( JwtUser jwtUser, Long commentID ) throws Status436DoesntExistException, Status419UserException {
         User user = userService.findUserById(jwtUser.id());
         Comment comment = commentService.findCommentById(commentID);
         if ( likeV2repository.existsByUserAndContentId(user,commentID) ){
@@ -74,7 +73,7 @@ public class LikeToCommentServiceImpl implements LikeToCommentService {
             log.info("deleting like to comment with id : {} by user: {}", comment.getId(), user.getUsername());
         }
         else {
-            throw new Status438LikeDoesntExistException("Like doesn't exist");
+            throw new Status436DoesntExistException("Like doesn't exist");
         }
 
     }

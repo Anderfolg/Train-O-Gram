@@ -1,11 +1,10 @@
 package org.anderfolg.trainogram.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.anderfolg.trainogram.entities.DTO.UserDto;
+import org.anderfolg.trainogram.entities.dto.UserDto;
 import org.anderfolg.trainogram.entities.User;
-import org.anderfolg.trainogram.exceptions.Status427EmailAlreadyExistsException;
+import org.anderfolg.trainogram.exceptions.Status420AlreadyExistsException;
 import org.anderfolg.trainogram.exceptions.Status419UserException;
-import org.anderfolg.trainogram.exceptions.Status420UsernameAlreadyExistsException;
 import org.anderfolg.trainogram.repo.UserRepository;
 import org.anderfolg.trainogram.security.jwt.JwtTokenProvider;
 import org.anderfolg.trainogram.service.UserService;
@@ -47,19 +46,19 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User createUser ( UserDto userDto ) throws Status420UsernameAlreadyExistsException, Status427EmailAlreadyExistsException {
+    public User createUser ( UserDto userDto ) throws Status420AlreadyExistsException {
         log.info("registering user {}", userDto.getUsername());
 
         if(userRepository.existsByUsername(userDto.getUsername())) {
             log.warn("username {} already exists.", userDto.getUsername());
 
-            throw new Status420UsernameAlreadyExistsException(String.format("username %s already exists", userDto.getUsername()));
+            throw new Status420AlreadyExistsException(String.format("username %s already exists", userDto.getUsername()));
         }
 
         if(userRepository.existsByEmail(userDto.getEmail())) {
             log.warn("email {} already exists.", userDto.getEmail());
 
-            throw new Status427EmailAlreadyExistsException(
+            throw new Status420AlreadyExistsException(
                     String.format("email %s already exists", userDto.getEmail()));
         }
             String encodedPassword = bCryptPasswordEncoder.encode(userDto.getPassword());
@@ -79,7 +78,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User updateUser(UserDto userDto, Long userId) throws Status420UsernameAlreadyExistsException, Status427EmailAlreadyExistsException, Status419UserException {
+    public User updateUser(UserDto userDto, Long userId) throws Status420AlreadyExistsException, Status419UserException {
         log.info("updating user {}", userDto.getUsername());
 
         if (userRepository.existsByUsername(userDto.getUsername()) || userRepository.existsByEmail(userDto.getEmail())) {
@@ -87,9 +86,7 @@ public class UserServiceImpl implements UserService{
             log.warn("{} {}", message, userDto.getUsername());
 
             if (userRepository.existsByUsername(userDto.getUsername())) {
-                throw new Status420UsernameAlreadyExistsException(message);
-            } else {
-                throw new Status427EmailAlreadyExistsException(message);
+                throw new Status420AlreadyExistsException(message);
             }
         }
 

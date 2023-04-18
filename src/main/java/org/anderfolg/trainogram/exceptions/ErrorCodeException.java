@@ -3,7 +3,7 @@ package org.anderfolg.trainogram.exceptions;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ErrorCodeException extends Exception {
+public class ErrorCodeException extends RuntimeException {
     private static final String GENERAL_EXCEPTION_GUID = "ErrorCodeException";
     private int code = Integer.MAX_VALUE;
     private Object context;
@@ -11,18 +11,6 @@ public class ErrorCodeException extends Exception {
 
     private ErrorCodeException() {
         super("Error code exception without message");
-    }
-
-    private ErrorCodeException(String message) {
-        super(message);
-    }
-
-    private ErrorCodeException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    private ErrorCodeException(Throwable cause) {
-        super("Error code exception without message", cause);
     }
 
     public String getErrorCode() {

@@ -15,7 +15,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/likes")
-//  TODO (Bogdan O.) 7/4/23: remove CRUD namings
 //  TODO (Bogdan O.) 7/4/23: use pagination for "getAll" method types
 public class LikeV2Controller {
     private final LikeToPostService likeToPostService;
@@ -27,54 +26,54 @@ public class LikeV2Controller {
         this.likeToCommentService = likeToCommentService;
     }
 
-    @GetMapping("/posts/{postId}/likes")
-    public ResponseEntity<List<Like>> getLikesByPost( @PathVariable("postId") Long postId) throws Status436PostDoesntExistException {
+    @GetMapping("/posts/{postId}")
+    public ResponseEntity<List<Like>> getLikesByPost( @PathVariable("postId") Long postId) throws Status436DoesntExistException {
         List<Like> likes = likeToPostService.findAllLikesByPost(postId);
         return new ResponseEntity<>(likes, HttpStatus.OK);
     }
 
-    @GetMapping("/users/{userId}/post-likes")
+    @GetMapping("/users/{userId}")
     public ResponseEntity<List<Like>> getAllPostLikesByUser( @PathVariable("userId") JwtUser jwtUser) throws Status419UserException {
         List<Like> likes = likeToPostService.findAllLikesByUser(jwtUser);
         return new ResponseEntity<>(likes, HttpStatus.OK);
     }
 
-    @PostMapping("/posts/{postId}/likes")
+    @PostMapping("/posts/{postId}")
     public ResponseEntity<ApiResponse> addLikeToPost(@PathVariable("postId") Long postID,
-                                                     JwtUser jwtUser) throws Status436PostDoesntExistException, Status440LikeAlreadyExistsException, Status419UserException {
+                                                     JwtUser jwtUser) throws Status436DoesntExistException, Status419UserException {
         likeToPostService.addLikeToPost(jwtUser, postID);
         return new ResponseEntity<>(new ApiResponse(true, "Like has been added"), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/posts/{postId}/likes")
+    @DeleteMapping("/posts/{postId}")
     public ResponseEntity<ApiResponse> deleteLikeFromPost(@PathVariable("postId") final Long postID,
-                                                          JwtUser jwtUser) throws Status438LikeDoesntExistException, Status436PostDoesntExistException, Status419UserException {
+                                                          JwtUser jwtUser) throws  Status436DoesntExistException, Status419UserException {
         likeToPostService.deleteLikeFromPost(jwtUser, postID);
         return new ResponseEntity<>(new ApiResponse(true, "Like has been deleted"), HttpStatus.OK);
     }
 
-    @GetMapping("/comments/{commentId}/likes")
-    public ResponseEntity<List<Like>> getLikesByComment( @PathVariable("commentId") Long commentID) throws Status439CommentDoesntExistException {
+    @GetMapping("/comments/{commentId}")
+    public ResponseEntity<List<Like>> getLikesByComment( @PathVariable("commentId") Long commentID) throws Status436DoesntExistException {
         List<Like> likes = likeToCommentService.findAllLikesByComment(commentID);
         return new ResponseEntity<>(likes, HttpStatus.OK);
     }
 
-    @GetMapping("/users/{userId}/comment-likes")
+    @GetMapping("/users/comments/{userId}")
     public ResponseEntity<List<Like>> getAllCommentLikesByUser( @PathVariable("userId") JwtUser jwtUser) throws Status419UserException {
         List<Like> likes = likeToCommentService.findAllLikesByUser(jwtUser);
         return new ResponseEntity<>(likes, HttpStatus.OK);
     }
 
-    @PostMapping("/comments/{commentId}/likes")
+    @PostMapping("/comments/{commentId}")
     public ResponseEntity<ApiResponse> addLikeToComment(@PathVariable("commentId") Long commentID,
-                                                        JwtUser jwtUser) throws Status440LikeAlreadyExistsException, Status439CommentDoesntExistException, Status419UserException {
+                                                        JwtUser jwtUser) throws Status436DoesntExistException, Status419UserException {
         likeToCommentService.addLikeToComment(jwtUser, commentID);
         return new ResponseEntity<>(new ApiResponse(true, "Like has been added"), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/delete-from-comment/{commentID}")
     public ResponseEntity<ApiResponse> deleteLikeFromComment(@PathVariable("commentID") final Long commentID,
-                                                             JwtUser jwtUser) throws Status438LikeDoesntExistException, Status439CommentDoesntExistException, Status419UserException {
+                                                             JwtUser jwtUser) throws Status436DoesntExistException, Status419UserException {
         likeToCommentService.deleteLikeFromComment(jwtUser,commentID);
         return new ResponseEntity<>(new ApiResponse(true, "Like has been deleted"), HttpStatus.OK);
     }

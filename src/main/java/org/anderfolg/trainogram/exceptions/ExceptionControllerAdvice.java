@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @Slf4j
 public class ExceptionControllerAdvice {
     @ExceptionHandler(ErrorCodeException.class)
-    public ResponseEntity handleAlreadyExistsException(ErrorCodeException ex){
+    public ResponseEntity<String> handleAlreadyExistsException(ErrorCodeException ex){
         return ResponseEntity.status(ex.getCode()).body(ex.getMessage());
     }
-    public ResponseEntity handleException(Exception ex){
+    public ResponseEntity<String> handleException(Exception ex){
         log.error("Got exception: ",ex);
-        return new ResponseEntity(ExceptionUtils.getStackTrace(ex), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(ExceptionUtils.getStackTrace(ex), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

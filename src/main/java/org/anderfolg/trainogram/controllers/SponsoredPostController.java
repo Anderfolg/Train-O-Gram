@@ -1,7 +1,7 @@
 package org.anderfolg.trainogram.controllers;
 
 import org.anderfolg.trainogram.entities.ApiResponse;
-import org.anderfolg.trainogram.entities.DTO.PostDto;
+import org.anderfolg.trainogram.entities.dto.PostDto;
 import org.anderfolg.trainogram.entities.Post;
 import org.anderfolg.trainogram.exceptions.*;
 import org.anderfolg.trainogram.security.jwt.JwtUser;
@@ -16,8 +16,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/sponsor-post")
-//  TODO (Bogdan O.) 7/4/23: remove CRUD namings
+@RequestMapping("/api/sponsor-posts")
 //  TODO (Bogdan O.) 7/4/23: use pagination for "getAll" method types
 public class SponsoredPostController {
     private final SponsorPostService sponsorPostService;
@@ -27,26 +26,26 @@ public class SponsoredPostController {
         this.sponsorPostService = sponsorPostService;
     }
 
-    @PostMapping(value = "/add")
+    @PostMapping(value = "/")
     public ResponseEntity<ApiResponse> addSponsoredPost( @RequestParam("description") @Valid String description,
                                                          JwtUser jwtUser,
                                                 @RequestParam("sponsorID") Long sponsorID,
-                                                @RequestPart("image") MultipartFile image ) throws Status435StorageException, Status432InvalidFileNameException, Status430InvalidFileException, Status436PostDoesntExistException, Status419UserException {
+                                                @RequestPart("image") MultipartFile image ) throws Status435StorageException, Status432InvalidFileNameException, Status430InvalidFileException, Status436DoesntExistException, Status419UserException {
         sponsorPostService.addSponsorPost(description,jwtUser,image,sponsorID);
         return new ResponseEntity<>(new ApiResponse(true, "Post has been added"), HttpStatus.CREATED);
     }
 
-    @PutMapping(value="/update/{postID}")
+    @PutMapping(value="/{postID}")
     public ResponseEntity<ApiResponse> updateSponsoredPost(@RequestParam("description") @Valid String description,
                                                   @PathVariable("postID") Long postId,
                                                            JwtUser jwtUser,
-                                                  @RequestPart("image") MultipartFile image) throws Status436PostDoesntExistException, Status435StorageException, Status432InvalidFileNameException, Status430InvalidFileException, Status419UserException {
+                                                  @RequestPart("image") MultipartFile image) throws Status436DoesntExistException, Status435StorageException, Status432InvalidFileNameException, Status430InvalidFileException, Status419UserException {
         sponsorPostService.updateSponsorPost(description, jwtUser, image, postId);
         return new ResponseEntity<>(new ApiResponse(true, "Post has been updated"), HttpStatus.OK);
     }
-    @DeleteMapping(value = "/delete/{postID}")
+    @DeleteMapping(value = "/{postID}")
     public ResponseEntity<ApiResponse> deletePost(@PathVariable("postID") final Long postID,
-                                                  JwtUser jwtUser) throws Status436PostDoesntExistException, Status419UserException {
+                                                  JwtUser jwtUser) throws Status436DoesntExistException, Status419UserException {
         sponsorPostService.deleteSponsorPost( jwtUser, postID);
         return new ResponseEntity<>(new ApiResponse(true, "Post has been deleted"), HttpStatus.OK);
     }

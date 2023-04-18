@@ -2,8 +2,8 @@ package org.anderfolg.trainogram.controllers;
 
 import lombok.extern.slf4j.Slf4j;
 import org.anderfolg.trainogram.entities.User;
-import org.anderfolg.trainogram.entities.chatEntities.ChatRoom;
-import org.anderfolg.trainogram.entities.chatEntities.Message;
+import org.anderfolg.trainogram.entities.chatentities.ChatRoom;
+import org.anderfolg.trainogram.entities.chatentities.Message;
 import org.anderfolg.trainogram.repo.MessageRepository;
 import org.anderfolg.trainogram.service.ChatRoomService;
 import org.anderfolg.trainogram.service.UserService;
@@ -15,10 +15,7 @@ import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 @ServerEndpoint(value = "/chat/{chatId}", decoders = MessageDecoder.class, encoders = MessageEncoder.class)
 @Slf4j
@@ -82,31 +79,28 @@ public class ChatEndpoint {
     }
 
     @OnClose
-    //  TODO (Bogdan O.) 7/4/23: instead of multiple nesting - better use Optionals for getting objects and handle "not found" exceptions
     public void onClose() {
         Long chatId = users.remove(session.getId());
         chatEndpoints.remove(this);
         if (chatId != null) {
-            ChatRoom chatRoom = chatRoomService.getChatRoomByChatId(chatId);
-            if (chatRoom != null) {
+            Optional<ChatRoom> optionalChatRoom = Optional.ofNullable(chatRoomService.getChatRoomByChatId(chatId));
+            optionalChatRoom.ifPresent(chatRoom -> {
                 List<User> remainingUsers = chatRoom.getRecipients().stream()
                         .filter(user -> chatEndpoints.stream()
-                                .anyMatch(endpoint -> endpoint.currentUser.equals(user))).toList();
+                                .anyMatch(endpoint -> endpoint.currentUser.equals(user)))
+                        .toList();
                 if (remainingUsers.isEmpty()) {
                     messageRepository.deleteAllByChatId(chatId);
                     chatRoomService.deleteChatRoomById(chatId);
                 }
-            }
+            });
         }
     }
 
     @OnError
-    //  TODO (Bogdan O.) 7/4/23: throw exceptions on every major error
     public void onError(Throwable throwable) {
         log.error("Error in ChatEndpoint: " + throwable.getMessage());
-
-
-
+        throw new RuntimeException(throwable);
     }
 
     private static void broadcast(Message  message) {

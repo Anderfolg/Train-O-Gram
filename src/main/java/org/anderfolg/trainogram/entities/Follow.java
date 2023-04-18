@@ -1,7 +1,7 @@
 package org.anderfolg.trainogram.entities;
 
 import lombok.*;
-import org.anderfolg.trainogram.entities.DTO.FollowDto;
+import org.anderfolg.trainogram.entities.dto.FollowDto;
 
 import javax.persistence.*;
 
@@ -26,10 +26,4 @@ public class Follow {
     @JoinColumn(nullable = false, name = "following")
     private User following;
 
-
-    //  TODO (Bogdan O.) 7/4/23: needs to be removed
-    public Follow( FollowDto followDto) {
-        this.follower = followDto.getFollower();
-        this.following = followDto.getFollowing();
-    }
 }

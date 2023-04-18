@@ -40,7 +40,7 @@ public class Post {
     private Set<Comment> commentaries;
 
     @Column(nullable = false)
-    @Convert(converter = ContentConverter.FieldConverter.class)
+    @Convert(converter = ContentType.ContentConverter.FieldConverter.class)
     private ContentType type;
 
     @CreatedDate

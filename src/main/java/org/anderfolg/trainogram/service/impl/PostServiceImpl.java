@@ -3,7 +3,7 @@ package org.anderfolg.trainogram.service.impl;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.anderfolg.trainogram.entities.ContentType;
-import org.anderfolg.trainogram.entities.DTO.PostDto;
+import org.anderfolg.trainogram.entities.dto.PostDto;
 import org.anderfolg.trainogram.entities.Post;
 import org.anderfolg.trainogram.entities.User;
 import org.anderfolg.trainogram.exceptions.*;
@@ -12,6 +12,7 @@ import org.anderfolg.trainogram.security.jwt.JwtUser;
 import org.anderfolg.trainogram.service.ImageService;
 import org.anderfolg.trainogram.service.PostService;
 import org.anderfolg.trainogram.service.UserService;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,22 +35,23 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDto> listPostsByUser( Long userID ) throws Status419UserException {
+    public Page<PostDto> listPostsByUser(Long userID, int page, int size) throws Status419UserException {
         User user = userService.findUserById(userID);
-        List<Post> postList = postRepository.findAllByUser(user);
+        Pageable paging = PageRequest.of(page, size, Sort.by("createDate").descending());
+        Page<Post> postPage = postRepository.findAllByUser(user, paging);
         List<PostDto> posts = new ArrayList<>();
-        for (Post post:postList){
+        for (Post post:postPage.getContent()){
             PostDto postDto = getDtoFromPost(post);
             posts.add(postDto);
         }
-        return posts;
+        return new PageImpl<>(posts, paging, postPage.getTotalElements());
     }
 
     @Override
-    public Post findPostById( Long id ) throws Status436PostDoesntExistException {
+    public Post findPostById( Long id ) throws Status436DoesntExistException {
         Optional<Post> optionalPost = postRepository.findById(id);
         if ( optionalPost.isEmpty() )
-            throw new Status436PostDoesntExistException("Post id is invalid " + id);
+            throw new Status436DoesntExistException("Post id is invalid " + id);
         return optionalPost.get();
     }
 
@@ -64,7 +66,7 @@ public class PostServiceImpl implements PostService {
 
     @Transactional
     @Override
-    public void updatePost(Long postID, String description, JwtUser jwtUser, MultipartFile file ) throws Status435StorageException, Status432InvalidFileNameException, Status430InvalidFileException, Status436PostDoesntExistException, Status419UserException {
+    public void updatePost(Long postID, String description, JwtUser jwtUser, MultipartFile file ) throws Status435StorageException, Status432InvalidFileNameException, Status430InvalidFileException, Status436DoesntExistException, Status419UserException {
         Optional<Post> optionalPost = postRepository.findById(postID);
         if (optionalPost.isPresent()){
             User user = userService.findUserById(jwtUser.id());
@@ -74,12 +76,12 @@ public class PostServiceImpl implements PostService {
             post.setDescription(description);
             postRepository.save(post);
         }
-        else throw new Status436PostDoesntExistException("Post was not found");
+        else throw new Status436DoesntExistException("Post was not found");
     }
 
     @Override
     @Transactional
-    public void deletePost(Long id, JwtUser jwtUser) throws Status419UserException, Status436PostDoesntExistException {
+    public void deletePost(Long id, JwtUser jwtUser) throws Status419UserException, Status436DoesntExistException {
         User user = userService.findUserById(jwtUser.id());
         Optional<Post> post = postRepository.findById(id);
         if (post.isPresent()) {
@@ -87,7 +89,7 @@ public class PostServiceImpl implements PostService {
             postRepository.deleteById(id);
             log.info("deleting post from user: {}", user.getUsername());
         } else {
-            throw new Status436PostDoesntExistException("Post was not found");
+            throw new Status436DoesntExistException("Post was not found");
         }
     }
 
@@ -126,6 +128,8 @@ public class PostServiceImpl implements PostService {
         PostDto postDto = new PostDto();
         postDto.setImageUrl(post.getImageUrl());
         postDto.setDescription(post.getDescription());
+        postDto.setUser(post.getUser());
+        postDto.setImageName(post.getImageName());
         return postDto;
     }
     public Post getPostFromRequest(String description, User user, MultipartFile image) throws Status435StorageException, Status432InvalidFileNameException, Status430InvalidFileException {

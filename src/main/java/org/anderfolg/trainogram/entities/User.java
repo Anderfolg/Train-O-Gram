@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.anderfolg.trainogram.security.RoleConverter;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -31,7 +30,7 @@ public class User {
     private String email;
 
     @Column(nullable = false)
-    @Convert(converter = RoleConverter.FieldConverter.class)
+    @Convert(converter = Role.RoleConverter.FieldConverter.class)
     private Role role;
 
     @CreatedDate

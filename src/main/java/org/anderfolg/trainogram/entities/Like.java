@@ -26,11 +26,10 @@ public class Like {
     @Column(name = "content_id")
     private Long contentId;
 
-    @Convert(converter = ContentConverter.FieldConverter.class)
+    @Convert(converter = ContentType.ContentConverter.FieldConverter.class)
     @Column(name = "content_type",nullable = false)
     private ContentType contentType;
 
-    //  TODO (Bogdan O.) 7/4/23: needs to be removed
 
     public Like( User user, Long contentId, ContentType contentType) {
         this.user = user;

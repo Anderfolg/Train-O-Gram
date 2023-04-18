@@ -1,7 +1,7 @@
 package org.anderfolg.trainogram.websocket;
 
 import com.google.gson.Gson;
-import org.anderfolg.trainogram.entities.chatEntities.Message;
+import org.anderfolg.trainogram.entities.chatentities.Message;
 
 import javax.websocket.EncodeException;
 import javax.websocket.Encoder;

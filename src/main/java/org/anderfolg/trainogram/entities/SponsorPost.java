@@ -27,13 +27,7 @@ public class SponsorPost {
     private User sponsor;
 
     @Column(nullable = false)
-    @Convert(converter = ContentConverter.FieldConverter.class)
+    @Convert(converter = ContentType.ContentConverter.FieldConverter.class)
     private ContentType type;
 
-    //  TODO (Bogdan O.) 7/4/23: needs to be removed
-    public SponsorPost( Post sponsoredPost, User sponsor, ContentType type ) {
-        this.sponsoredPost = sponsoredPost;
-        this.sponsor = sponsor;
-        this.type = type;
-    }
 }

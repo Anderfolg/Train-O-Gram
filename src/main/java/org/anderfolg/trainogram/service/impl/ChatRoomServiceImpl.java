@@ -3,8 +3,9 @@ package org.anderfolg.trainogram.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.anderfolg.trainogram.entities.User;
-import org.anderfolg.trainogram.entities.chatEntities.ChatRoom;
+import org.anderfolg.trainogram.entities.chatentities.ChatRoom;
 import org.anderfolg.trainogram.exceptions.Status419UserException;
+import org.anderfolg.trainogram.exceptions.Status436DoesntExistException;
 import org.anderfolg.trainogram.repo.ChatRoomRepository;
 import org.anderfolg.trainogram.security.jwt.JwtUser;
 import org.anderfolg.trainogram.service.ChatRoomService;
@@ -44,12 +45,13 @@ public class ChatRoomServiceImpl implements ChatRoomService {
             chatRoomRepository.save(chatRoomSender);
         }
     }
-
     @Override
     public void deleteChatRoom(Long chatId, JwtUser jwtUser) throws Status419UserException {
         User user = userService.findUserById(jwtUser.id());
-        ChatRoom chatRoom = chatRoomRepository.findChatRoomByChatIdAndSender(chatId, user);
-        chatRoomRepository.delete(chatRoom);
+        if (chatRoomRepository.findChatRoomByChatIdAndSender(chatId, user).isPresent() ){
+            chatRoomRepository.deleteChatRoomByChatIdAndSender(chatId, user);
+        }
+    else throw new Status436DoesntExistException(chatId + " is not present");
     }
 
     @Override
@@ -60,7 +62,7 @@ public class ChatRoomServiceImpl implements ChatRoomService {
     @Override
     public void addUserToChatRoom(Long chatId, JwtUser jwtUser, String username) throws Status419UserException {
         User user = userService.findUserById(jwtUser.id());
-        ChatRoom chatRoom = chatRoomRepository.findChatRoomByChatIdAndSender(chatId, user);
+        ChatRoom chatRoom = getChatRoomByChatIdAndSender(chatId, user);
         User recipient = userService.findByUsername(username);
         chatRoom.getRecipients().add(recipient);
         chatRoomRepository.save(chatRoom);
@@ -88,11 +90,15 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Override
     public ChatRoom getChatRoomByChatIdAndSender(Long chatId, User sender) {
-        return chatRoomRepository.findChatRoomByChatIdAndSender(chatId, sender);
+        if ( chatRoomRepository.findChatRoomByChatIdAndSender(chatId, sender).isPresent() )
+            return chatRoomRepository.findChatRoomByChatIdAndSender(chatId, sender).get();
+        else throw new Status436DoesntExistException("ChatRoom with id " + chatId + " doesn't exist");
     }
 
     @Override
     public ChatRoom getChatRoomByChatId( Long chatId ) {
-        return chatRoomRepository.findChatRoomByChatId(chatId);
+        if ( chatRoomRepository.findChatRoomByChatId(chatId).isPresent() )
+            return chatRoomRepository.findChatRoomByChatId(chatId).get();
+        else throw new Status436DoesntExistException("ChatRoom with id " + chatId + " doesn't exist");
     }
 }

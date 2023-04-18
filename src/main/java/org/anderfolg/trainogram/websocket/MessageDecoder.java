@@ -4,7 +4,7 @@ import javax.websocket.DecodeException;
 import javax.websocket.Decoder;
 import javax.websocket.EndpointConfig;
 import com.google.gson.Gson;
-import org.anderfolg.trainogram.entities.chatEntities.Message;
+import org.anderfolg.trainogram.entities.chatentities.Message;
 
 public class MessageDecoder implements Decoder.Text<Message> {
 
@@ -22,11 +22,11 @@ public class MessageDecoder implements Decoder.Text<Message> {
 
     @Override
     public void init( EndpointConfig endpointConfig ) {
-
+        //do nothing
     }
 
     @Override
     public void destroy() {
-
+        //do nothing
     }
 }

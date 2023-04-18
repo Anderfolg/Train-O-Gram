@@ -47,6 +47,10 @@ public enum NotificationType {
 }
 
 class NotificationConverter {
+
+    private NotificationConverter() {
+        throw new IllegalStateException("Utility class");
+    }
     @Converter(autoApply = true)
     public static class FieldConverter implements AttributeConverter<NotificationType,Long> {
         @Override

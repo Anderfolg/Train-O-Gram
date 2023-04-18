@@ -36,15 +36,8 @@ public class Comment {
     private Set<Like> likes;
 
     @Column(nullable = false)
-    @Convert(converter = ContentConverter.FieldConverter.class)
+    @Convert(converter = ContentType.ContentConverter.FieldConverter.class)
     private ContentType type;
 
 
-    //  TODO (Bogdan O.) 7/4/23: constructor is unused
-    public Comment( String content, User user, Post post) {
-        this.content = content;
-        this.user = user;
-        this.post = post;
-        this.type = ContentType.COMMENT;
-    }
 }

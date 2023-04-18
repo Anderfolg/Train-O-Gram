@@ -1,7 +1,7 @@
 package org.anderfolg.trainogram.controllers;
 
 import org.anderfolg.trainogram.entities.ApiResponse;
-import org.anderfolg.trainogram.entities.DTO.FollowDto;
+import org.anderfolg.trainogram.entities.dto.FollowDto;
 import org.anderfolg.trainogram.entities.User;
 import org.anderfolg.trainogram.exceptions.Status419UserException;
 import org.anderfolg.trainogram.security.jwt.JwtUser;
@@ -15,8 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/follow")
-//  TODO (Bogdan O.) 7/4/23: remove CRUD namings
+@RequestMapping("/api/follows")
 //  TODO (Bogdan O.) 7/4/23: use pagination for "getAll" method types
 public class FollowController {
     private final FollowService followService;
@@ -35,21 +34,21 @@ public class FollowController {
         return new ResponseEntity<>(followers, HttpStatus.OK);
     }
 
-    @PostMapping("/add/{userID}")
+    @PostMapping("/{userID}")
     public ResponseEntity<ApiResponse> addFollowing( @PathVariable("userID") Long id,
                                                      JwtUser jwtUser) throws Status419UserException {
         followService.addFollowing(jwtUser,id);
         return new ResponseEntity<>(new ApiResponse(true, "Following has been added"), HttpStatus.CREATED);
     }
 
-    @DeleteMapping("following/delete/{followID}")
+    @DeleteMapping("followings/{followID}")
     public ResponseEntity<ApiResponse> deleteFollowing(@PathVariable("followID") final Long followID,
                                                        JwtUser jwtUser) throws Status419UserException {
         followService.deleteFollowing(followID, jwtUser);
         return new ResponseEntity<>(new ApiResponse(true, "Following has been deleted"), HttpStatus.OK);
     }
 
-    @DeleteMapping("follower/delete/{followID}")
+    @DeleteMapping("followers/{followID}")
     public ResponseEntity<ApiResponse> deleteFollower(@PathVariable("followID") final Long followID,
                                                       JwtUser jwtUser) throws Status419UserException {
         followService.deleteFollower(followID, jwtUser);

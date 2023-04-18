@@ -5,7 +5,8 @@ import org.anderfolg.trainogram.entities.User;
 import java.util.List;
 
 public class JwtUserFactory {
-    public JwtUserFactory(){
+    private JwtUserFactory(){
+        throw new IllegalStateException("Utility class");
     }
     public static JwtUser create( User user){
         return new JwtUser(user.getId(),

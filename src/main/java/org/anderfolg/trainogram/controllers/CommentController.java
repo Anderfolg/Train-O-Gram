@@ -2,10 +2,9 @@ package org.anderfolg.trainogram.controllers;
 
 
 import org.anderfolg.trainogram.entities.ApiResponse;
-import org.anderfolg.trainogram.entities.DTO.CommentDto;
+import org.anderfolg.trainogram.entities.dto.CommentDto;
 import org.anderfolg.trainogram.entities.Post;
-import org.anderfolg.trainogram.exceptions.Status439CommentDoesntExistException;
-import org.anderfolg.trainogram.exceptions.Status436PostDoesntExistException;
+import org.anderfolg.trainogram.exceptions.Status436DoesntExistException;
 import org.anderfolg.trainogram.exceptions.Status419UserException;
 import org.anderfolg.trainogram.security.jwt.JwtUser;
 import org.anderfolg.trainogram.service.CommentService;
@@ -18,8 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/comment")
-//  TODO (Bogdan O.) 7/4/23: remove CRUD namings
+@RequestMapping("/api/comments")
 public class CommentController {
     private final CommentService commentService;
     private final PostService postService;
@@ -31,24 +29,24 @@ public class CommentController {
     }
 
     @GetMapping("/{postID}")
-    public ResponseEntity<List<CommentDto>> getCommentsByPost( @PathVariable("postID") Long id ) throws Status436PostDoesntExistException {
+    public ResponseEntity<List<CommentDto>> getCommentsByPost( @PathVariable("postID") Long id ) throws Status436DoesntExistException {
         Post post = postService.findPostById(id);
         List<CommentDto> comments = commentService.findCommentsByPost(post);
         return new ResponseEntity<>(comments, HttpStatus.OK);
     }
 
-    @PostMapping("/add/{postID}")
+    @PostMapping("/{postID}")
     public ResponseEntity<String> addComment( @RequestParam String content,
                                               @PathVariable ("postID") Long id,
-                                              JwtUser jwtUser ) throws Status436PostDoesntExistException, Status419UserException {
+                                              JwtUser jwtUser ) throws Status436DoesntExistException, Status419UserException {
         commentService.addComment(content, jwtUser, id);
         return ResponseEntity.ok("Comment has been added");
     }
 
-    @PutMapping("/update/{comID}")
+    @PutMapping("/{comID}")
     public ResponseEntity<ApiResponse> updateComment( @RequestParam String content,
                                                       JwtUser jwtUser,
-                                                      @PathVariable("comID") Long comID) throws Status439CommentDoesntExistException, Status419UserException {
+                                                      @PathVariable("comID") Long comID) throws Status436DoesntExistException, Status419UserException {
         commentService.updateComment(content, jwtUser, comID);
         return new ResponseEntity<>(new ApiResponse(true, "Comment has been updated"), HttpStatus.OK);
     }

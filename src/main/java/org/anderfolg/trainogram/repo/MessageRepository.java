@@ -1,6 +1,6 @@
 package org.anderfolg.trainogram.repo;
 
-import org.anderfolg.trainogram.entities.chatEntities.Message;
+import org.anderfolg.trainogram.entities.chatentities.Message;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,6 +1,6 @@
 package org.anderfolg.trainogram.service;
 
-import org.anderfolg.trainogram.entities.DTO.PostDto;
+import org.anderfolg.trainogram.entities.dto.PostDto;
 import org.anderfolg.trainogram.entities.Post;
 import org.anderfolg.trainogram.exceptions.*;
 import org.anderfolg.trainogram.security.jwt.JwtUser;
@@ -13,16 +13,16 @@ public interface SponsorPostService {
             throws Status435StorageException,
             Status432InvalidFileNameException,
             Status430InvalidFileException,
-            Status436PostDoesntExistException,
+            Status436DoesntExistException,
             Status419UserException;
     void updateSponsorPost(String description, JwtUser jwtUser, MultipartFile file, Long sponsorPostID)
             throws Status435StorageException,
-            Status436PostDoesntExistException,
+            Status436DoesntExistException,
             Status432InvalidFileNameException,
             Status430InvalidFileException,
             Status419UserException;
     void deleteSponsorPost( JwtUser jwtUser, Long sponsorPostID)
-            throws Status436PostDoesntExistException, Status419UserException;
+            throws Status436DoesntExistException, Status419UserException;
 
     List<Post> listSponsoredPosts();
     List<PostDto> listSponsoredPostsByUser(JwtUser jwtUser)
