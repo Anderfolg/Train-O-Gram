@@ -4,14 +4,14 @@ import org.anderfolg.trainogram.entities.Like;
 import org.anderfolg.trainogram.exceptions.Status436DoesntExistException;
 import org.anderfolg.trainogram.exceptions.Status419UserException;
 import org.anderfolg.trainogram.security.jwt.JwtUser;
+import org.springframework.data.domain.Page;
 
-import java.util.List;
 
 public interface LikeToPostService {
-    List<Like> findAllLikesByPost( Long id)
+    Page<Like> findAllLikesByPost( Long postID, int page, int size)
             throws Status436DoesntExistException;
 
-    List<Like> findAllLikesByUser( JwtUser jwtUser)
+    Page<Like> findAllLikesByUser( JwtUser jwtUser, int page, int size)
             throws Status419UserException;
     void addLikeToPost(JwtUser jwtUser, Long postID)
             throws

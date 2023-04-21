@@ -8,11 +8,10 @@ import org.anderfolg.trainogram.security.jwt.JwtUser;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
 
 
 public interface PostService {
-    List<Post> listPosts();
+    Page<Post> listPosts(int page, int pageSize);
     Page<PostDto> listPostsByUser(Long userID, int page, int size)
             throws Status419UserException;
     Post findPostById(Long id)
@@ -31,7 +30,7 @@ public interface PostService {
     void deletePost(Long id, JwtUser jwtUser)
             throws Status419UserException, Status436DoesntExistException;
     Long findLatestPostId();
-    List<PostDto> listPostsByUserAndType( JwtUser jwtUser, ContentType type )
+    Page<PostDto> listPostsByUserAndType(JwtUser jwtUser, ContentType type, int page, int size)
             throws Status419UserException;
-    List<PostDto> listPostsByType(ContentType type);
+    Page<PostDto> listPostsByType(ContentType type, int page, int size);
 }

@@ -42,10 +42,8 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Comment findCommentById( Long commentID ) throws Status436DoesntExistException {
-        Optional<Comment> comment = commentRepository.findById(commentID);
-        if ( comment.isEmpty() )
-            throw new Status436DoesntExistException("Comment id is invalid " + commentID);
-        return comment.get();
+        return commentRepository.findById(commentID)
+                .orElseThrow(() -> new Status436DoesntExistException("Comment id is invalid " + commentID));
     }
 
     @Override

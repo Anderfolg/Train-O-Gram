@@ -65,7 +65,7 @@ public class StorageServiceImpl implements StorageService {
         }
         catch (IOException e ){
             log.error("failed to store file {} error: {}", filename, e );
-            throw new Status435StorageException("Failed to store file " + filename, e);
+            throw new Status435StorageException("Failed to store file " + filename);
         }
     }
 

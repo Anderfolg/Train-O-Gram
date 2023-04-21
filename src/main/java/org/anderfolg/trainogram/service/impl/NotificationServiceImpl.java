@@ -40,11 +40,11 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     public NotificationDto getDtoFromNotification( Notification notification) {
-        NotificationDto notificationDto = new NotificationDto();
-        notificationDto.setMessage(notification.getMessage());
-        notificationDto.setRecipientId(notification.getUser().getId());
-        notificationDto.setContentId(notification.getContentId());
-        return notificationDto;
+        return NotificationDto.builder()
+                .message(notification.getMessage())
+                .recipientId(notification.getUser().getId())
+                .contentId(notification.getContentId())
+                .build();
     }
 
     public Notification getNotificationFromDto( NotificationDto notificationDto, User user, NotificationType type ) {

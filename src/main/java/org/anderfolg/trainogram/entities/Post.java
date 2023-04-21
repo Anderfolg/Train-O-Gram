@@ -24,11 +24,11 @@ public class Post {
     private String imageName;
 
     @Column(name = "image_url")
-    private String imageUrl;
+    private String imageUrl;//add implementation from FileUploadApi
 
     private String description;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.REMOVE)
     @JsonIgnore
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;

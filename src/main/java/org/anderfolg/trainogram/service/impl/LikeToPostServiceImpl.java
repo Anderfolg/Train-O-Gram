@@ -4,19 +4,20 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.anderfolg.trainogram.entities.*;
 import org.anderfolg.trainogram.entities.dto.NotificationDto;
+import org.anderfolg.trainogram.exceptions.Status419UserException;
 import org.anderfolg.trainogram.exceptions.Status420AlreadyExistsException;
 import org.anderfolg.trainogram.exceptions.Status436DoesntExistException;
-import org.anderfolg.trainogram.exceptions.Status419UserException;
 import org.anderfolg.trainogram.repo.LikeV2repository;
 import org.anderfolg.trainogram.security.jwt.JwtUser;
 import org.anderfolg.trainogram.service.LikeToPostService;
 import org.anderfolg.trainogram.service.NotificationService;
 import org.anderfolg.trainogram.service.PostService;
 import org.anderfolg.trainogram.service.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Slf4j
@@ -29,18 +30,22 @@ public class LikeToPostServiceImpl implements LikeToPostService {
 
 
     @Override
-    public List<Like> findAllLikesByPost( Long postID ) throws Status436DoesntExistException {
+    public Page<Like> findAllLikesByPost( Long postID, int page, int size) throws Status436DoesntExistException {
         Post post = postService.findPostById(postID);
+        Pageable pageable = PageRequest.of(page, size);
         log.info("getting all likes from post with id : {}", post.getId());
-        return likeV2repository.findAllByContentIdAndContentType(postID , ContentType.POST);
+        return likeV2repository.findAllByContentIdAndContentType(postID , ContentType.POST, pageable);
     }
 
+
     @Override
-    public List<Like> findAllLikesByUser( JwtUser jwtUser) throws Status419UserException {
+    public Page<Like> findAllLikesByUser(JwtUser jwtUser, int page, int size) throws Status419UserException {
         User user = userService.findUserById(jwtUser.id());
+        Pageable pageable = PageRequest.of(page, size);
         log.info("getting all likes to posts from user : {}", user.getUsername());
-        return likeV2repository.findAllByContentTypeAndUser(ContentType.POST, user);
+        return likeV2repository.findAllByContentTypeAndUser(ContentType.POST, user, pageable);
     }
+
 
 
     @Override
@@ -52,10 +57,12 @@ public class LikeToPostServiceImpl implements LikeToPostService {
 
             Like like = new Like(user, post.getId(), ContentType.POST);
             likeV2repository.save(like);
-            NotificationDto notificationDto = new NotificationDto();
-            notificationDto.setContentId(postID);
-            notificationDto.setRecipientId(post.getUser().getId());
-            notificationDto.setMessage("Your post has been liked by: "+user.getUsername());
+
+            NotificationDto notificationDto = NotificationDto.builder()
+                    .contentId(postID)
+                    .recipientId(post.getUser().getId())
+                    .message("Your post has been liked by: "+user.getUsername())
+                    .build();
             notificationService.createNotification(notificationDto, post.getUser(), NotificationType.LIKE);
             log.info("adding like to post with id : {}", post.getId());
         }

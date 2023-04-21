@@ -2,20 +2,19 @@ package org.anderfolg.trainogram.controllers;
 
 import org.anderfolg.trainogram.entities.ApiResponse;
 import org.anderfolg.trainogram.entities.Like;
-import org.anderfolg.trainogram.exceptions.*;
+import org.anderfolg.trainogram.exceptions.Status419UserException;
+import org.anderfolg.trainogram.exceptions.Status436DoesntExistException;
 import org.anderfolg.trainogram.security.jwt.JwtUser;
 import org.anderfolg.trainogram.service.LikeToCommentService;
 import org.anderfolg.trainogram.service.LikeToPostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/likes")
-//  TODO (Bogdan O.) 7/4/23: use pagination for "getAll" method types
 public class LikeV2Controller {
     private final LikeToPostService likeToPostService;
     private final LikeToCommentService likeToCommentService;
@@ -27,16 +26,24 @@ public class LikeV2Controller {
     }
 
     @GetMapping("/posts/{postId}")
-    public ResponseEntity<List<Like>> getLikesByPost( @PathVariable("postId") Long postId) throws Status436DoesntExistException {
-        List<Like> likes = likeToPostService.findAllLikesByPost(postId);
+    public ResponseEntity<Page<Like>> getLikesByPost(@PathVariable("postId") Long postId,
+                                                     @RequestParam(defaultValue = "0") int page,
+                                                     @RequestParam(defaultValue = "10") int size)
+            throws Status436DoesntExistException {
+        Page<Like> likes = likeToPostService.findAllLikesByPost(postId, page, size);
         return new ResponseEntity<>(likes, HttpStatus.OK);
     }
 
+
     @GetMapping("/users/{userId}")
-    public ResponseEntity<List<Like>> getAllPostLikesByUser( @PathVariable("userId") JwtUser jwtUser) throws Status419UserException {
-        List<Like> likes = likeToPostService.findAllLikesByUser(jwtUser);
+    public ResponseEntity<Page<Like>> getAllPostLikesByUser(@PathVariable("userId") JwtUser jwtUser,
+                                                            @RequestParam(defaultValue = "0") int page,
+                                                            @RequestParam(defaultValue = "10") int size)
+            throws Status419UserException {
+        Page<Like> likes = likeToPostService.findAllLikesByUser(jwtUser, page, size);
         return new ResponseEntity<>(likes, HttpStatus.OK);
     }
+
 
     @PostMapping("/posts/{postId}")
     public ResponseEntity<ApiResponse> addLikeToPost(@PathVariable("postId") Long postID,
@@ -53,14 +60,19 @@ public class LikeV2Controller {
     }
 
     @GetMapping("/comments/{commentId}")
-    public ResponseEntity<List<Like>> getLikesByComment( @PathVariable("commentId") Long commentID) throws Status436DoesntExistException {
-        List<Like> likes = likeToCommentService.findAllLikesByComment(commentID);
+    public ResponseEntity<Page<Like>> getLikesByComment(@PathVariable("commentId") Long commentID,
+                                                        @RequestParam(defaultValue = "0") int page,
+                                                        @RequestParam(defaultValue = "10") int size) throws Status436DoesntExistException {
+        Page<Like> likes = likeToCommentService.findAllLikesByComment(commentID, page, size);
         return new ResponseEntity<>(likes, HttpStatus.OK);
     }
 
+
     @GetMapping("/users/comments/{userId}")
-    public ResponseEntity<List<Like>> getAllCommentLikesByUser( @PathVariable("userId") JwtUser jwtUser) throws Status419UserException {
-        List<Like> likes = likeToCommentService.findAllLikesByUser(jwtUser);
+    public ResponseEntity<Page<Like>> getAllCommentLikesByUser(@PathVariable("userId") JwtUser jwtUser,
+                                                               @RequestParam(defaultValue = "0") int page,
+                                                               @RequestParam(defaultValue = "10") int size) throws Status419UserException {
+        Page<Like> likes = likeToCommentService.findAllLikesByUser(jwtUser, page, size);
         return new ResponseEntity<>(likes, HttpStatus.OK);
     }
 

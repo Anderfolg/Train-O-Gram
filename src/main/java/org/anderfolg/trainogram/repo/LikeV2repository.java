@@ -1,6 +1,8 @@
 package org.anderfolg.trainogram.repo;
 
 import org.anderfolg.trainogram.entities.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -11,9 +13,9 @@ import java.util.List;
 
 @Repository
 public interface LikeV2repository extends JpaRepository<Like, Long> {
-    List<Like> findAllByContentIdAndContentType( Long contentId, ContentType contentType);
+    Page<Like> findAllByContentIdAndContentType( Long contentId, ContentType contentType, Pageable pageable);
 
-    List<Like> findAllByContentTypeAndUser( ContentType contentType, User user);
+    Page<Like> findAllByContentTypeAndUser( ContentType contentType, User user, Pageable pageable);
     Like findLikeV2ByContentIdAndUser( Long contentId, User user);
 
     List<Like> findAllByUser( User user);

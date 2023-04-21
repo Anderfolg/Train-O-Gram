@@ -78,7 +78,7 @@ public class SponsorPostServiceImpl implements SponsorPostService {
 
     @Override
     public List<PostDto> listSponsoredPostsByUser( JwtUser jwtUser ) throws Status419UserException {
-        return postService.listPostsByUserAndType(jwtUser,ContentType.SPONSORED_POST);
+        return postService.listPostsByUserAndType(jwtUser,ContentType.SPONSORED_POST, 0, 1000).getContent();
     }
 
     @Override

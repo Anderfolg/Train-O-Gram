@@ -90,15 +90,13 @@ public class ChatRoomServiceImpl implements ChatRoomService {
 
     @Override
     public ChatRoom getChatRoomByChatIdAndSender(Long chatId, User sender) {
-        if ( chatRoomRepository.findChatRoomByChatIdAndSender(chatId, sender).isPresent() )
-            return chatRoomRepository.findChatRoomByChatIdAndSender(chatId, sender).get();
-        else throw new Status436DoesntExistException("ChatRoom with id " + chatId + " doesn't exist");
+        return chatRoomRepository.findChatRoomByChatIdAndSender(chatId, sender)
+                .orElseThrow(()-> new Status436DoesntExistException("ChatRoom with id " + chatId + " doesn't exist"));
     }
 
     @Override
     public ChatRoom getChatRoomByChatId( Long chatId ) {
-        if ( chatRoomRepository.findChatRoomByChatId(chatId).isPresent() )
-            return chatRoomRepository.findChatRoomByChatId(chatId).get();
-        else throw new Status436DoesntExistException("ChatRoom with id " + chatId + " doesn't exist");
+        return chatRoomRepository.findChatRoomByChatId(chatId)
+                .orElseThrow(()-> new Status436DoesntExistException("ChatRoom with id " + chatId + " doesn't exist"));
     }
 }

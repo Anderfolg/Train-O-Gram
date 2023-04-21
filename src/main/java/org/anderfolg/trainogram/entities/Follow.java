@@ -1,7 +1,6 @@
 package org.anderfolg.trainogram.entities;
 
 import lombok.*;
-import org.anderfolg.trainogram.entities.dto.FollowDto;
 
 import javax.persistence.*;
 

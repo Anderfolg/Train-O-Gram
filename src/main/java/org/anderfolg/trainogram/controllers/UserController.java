@@ -6,6 +6,10 @@ import org.anderfolg.trainogram.exceptions.Status419UserException;
 import org.anderfolg.trainogram.exceptions.Status420AlreadyExistsException;
 import org.anderfolg.trainogram.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,7 +17,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/users")
-//  TODO (Bogdan O.) 7/4/23: use pagination for "getAll" method types
 public class UserController {
     private final UserService userService;
 
@@ -22,8 +25,10 @@ public class UserController {
         this.userService = userService;
     }
     @GetMapping("/all")
-    public List<User> allUsers(){
-        return userService.findAllUsers();
+    public ResponseEntity<List<User>> getAllUsers(@RequestParam(defaultValue = "0") int pageNo,
+                                                  @RequestParam(defaultValue = "10") int pageSize) {
+        Page<User> users = userService.findAllUsers(pageNo, pageSize);
+        return new ResponseEntity<>(users.getContent(), HttpStatus.OK);
     }
 
     @PostMapping("/register")

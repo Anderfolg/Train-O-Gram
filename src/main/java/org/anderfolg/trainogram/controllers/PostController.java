@@ -20,7 +20,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/posts")
-//  TODO (Bogdan O.) 7/4/23: use pagination for "getAll" method types
 public class PostController {
     private final PostService postService;
 
@@ -30,9 +29,10 @@ public class PostController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<Post>> getPosts() {
-        List<Post> body = postService.listPosts();
-        return new ResponseEntity<>(body, HttpStatus.OK);
+    public ResponseEntity<Page<Post>> getPosts(@RequestParam(defaultValue = "0") int page,
+                                               @RequestParam(defaultValue = "10") int pageSize) {
+        Page<Post> posts = postService.listPosts(page, pageSize);
+        return ResponseEntity.ok(posts);
     }
 
     @GetMapping("/{userId}")

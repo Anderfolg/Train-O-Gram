@@ -30,8 +30,9 @@ public class PostServiceImpl implements PostService {
     private final UserService userService;
 
     @Override
-    public List<Post> listPosts() {
-        return postRepository.findAllByType(ContentType.POST);
+    public Page<Post> listPosts(int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        return postRepository.findAllByType(ContentType.POST, pageable);
     }
 
     @Override
@@ -39,20 +40,12 @@ public class PostServiceImpl implements PostService {
         User user = userService.findUserById(userID);
         Pageable paging = PageRequest.of(page, size, Sort.by("createDate").descending());
         Page<Post> postPage = postRepository.findAllByUser(user, paging);
-        List<PostDto> posts = new ArrayList<>();
-        for (Post post:postPage.getContent()){
-            PostDto postDto = getDtoFromPost(post);
-            posts.add(postDto);
-        }
-        return new PageImpl<>(posts, paging, postPage.getTotalElements());
+        return new PageImpl<>(postPage.getContent(), paging, postPage.getTotalElements()).map(this::getDtoFromPost);
     }
 
     @Override
     public Post findPostById( Long id ) throws Status436DoesntExistException {
-        Optional<Post> optionalPost = postRepository.findById(id);
-        if ( optionalPost.isEmpty() )
-            throw new Status436DoesntExistException("Post id is invalid " + id);
-        return optionalPost.get();
+        return postRepository.findById(id).orElseThrow(() -> new Status436DoesntExistException("Post id is invalid " + id));
     }
 
 
@@ -66,7 +59,7 @@ public class PostServiceImpl implements PostService {
 
     @Transactional
     @Override
-    public void updatePost(Long postID, String description, JwtUser jwtUser, MultipartFile file ) throws Status435StorageException, Status432InvalidFileNameException, Status430InvalidFileException, Status436DoesntExistException, Status419UserException {
+    public void updatePost(Long postID, String description, JwtUser jwtUser, MultipartFile file ) throws Status432InvalidFileNameException, Status430InvalidFileException, Status436DoesntExistException, Status419UserException {
         Optional<Post> optionalPost = postRepository.findById(postID);
         if (optionalPost.isPresent()){
             User user = userService.findUserById(jwtUser.id());
@@ -101,27 +94,28 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDto> listPostsByUserAndType( JwtUser jwtUser, ContentType type ) throws Status419UserException {
+    public Page<PostDto> listPostsByUserAndType(JwtUser jwtUser, ContentType type, int page, int size) throws Status419UserException {
         User user = userService.findUserById(jwtUser.id());
-        List<Post> postList = postRepository.findAllByUserAndType(user, type);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Post> postPage = postRepository.findAllByUserAndType(user, type, pageable);
         List<PostDto> posts = new ArrayList<>();
-        for (Post post:postList) {
+        for (Post post : postPage.getContent()) {
             PostDto postDto = getDtoFromPost(post);
             posts.add(postDto);
         }
-        return posts;
+        return new PageImpl<>(posts, pageable, postPage.getTotalElements());
     }
 
     @Override
-    public List<PostDto> listPostsByType( ContentType type ) {
-        List<Post> postList = postRepository.findAllByType(type);
+    public Page<PostDto> listPostsByType(ContentType type, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Post> postPage = postRepository.findAllByType(type, pageable);
         List<PostDto> posts = new ArrayList<>();
-        for (Post post:postList) {
+        for (Post post : postPage) {
             PostDto postDto = getDtoFromPost(post);
-
             posts.add(postDto);
         }
-        return posts;
+        return new PageImpl<>(posts, pageable, postPage.getTotalElements());
     }
 
     public PostDto getDtoFromPost(Post post) {

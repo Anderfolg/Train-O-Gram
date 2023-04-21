@@ -4,8 +4,8 @@ import org.anderfolg.trainogram.entities.dto.UserDto;
 import org.anderfolg.trainogram.entities.User;
 import org.anderfolg.trainogram.exceptions.Status420AlreadyExistsException;
 import org.anderfolg.trainogram.exceptions.Status419UserException;
+import org.springframework.data.domain.Page;
 
-import java.util.List;
 
 public interface UserService {
     User findByUsername( String username);
@@ -20,7 +20,7 @@ public interface UserService {
             throws Status419UserException,
             Status420AlreadyExistsException;
 
-    List<User> findAllUsers();
+    Page<User> findAllUsers( int pageNumber, int pageSize);
 
     User findUserById(Long id)
             throws Status419UserException;

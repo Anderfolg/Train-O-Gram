@@ -13,10 +13,11 @@ import org.anderfolg.trainogram.service.CommentService;
 import org.anderfolg.trainogram.service.LikeToCommentService;
 import org.anderfolg.trainogram.service.NotificationService;
 import org.anderfolg.trainogram.service.UserService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Slf4j
@@ -29,18 +30,22 @@ public class LikeToCommentServiceImpl implements LikeToCommentService {
 
 
     @Override
-    public List<Like> findAllLikesByComment( Long commentID ) throws Status436DoesntExistException {
+    public Page<Like> findAllLikesByComment( Long commentID, int page, int size) throws Status436DoesntExistException {
         Comment comment = commentService.findCommentById(commentID);
         log.info("getting all likes from comment by {}", comment.getUser());
-        return likeV2repository.findAllByContentIdAndContentType(comment.getId(), ContentType.COMMENT);
+        Pageable pageable = PageRequest.of(page, size);
+        return likeV2repository.findAllByContentIdAndContentType(comment.getId(), ContentType.COMMENT, pageable);
     }
 
+
     @Override
-    public List<Like> findAllLikesByUser( JwtUser jwtUser ) throws Status419UserException {
+    public Page<Like> findAllLikesByUser(JwtUser jwtUser, int page, int size) throws Status419UserException {
         User user = userService.findUserById(jwtUser.id());
         log.info("getting all likes to comment by user {}", user.getUsername());
-        return likeV2repository.findAllByContentTypeAndUser(ContentType.COMMENT, user);
+        Pageable pageable = PageRequest.of(page, size);
+        return likeV2repository.findAllByContentTypeAndUser(ContentType.COMMENT, user, pageable);
     }
+
     @Override
     public void addLikeToComment( JwtUser jwtUser, Long commentID ) throws Status436DoesntExistException, Status420AlreadyExistsException, Status419UserException {
         User user = userService.findUserById(jwtUser.id());
