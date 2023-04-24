@@ -46,6 +46,7 @@ public enum ContentType {
     }
 
     public static class ContentConverter {
+        //  TODO (Bogdan O.) 24/4/23: exception usage in constructor?
         private ContentConverter() {
             throw new IllegalStateException("Utility class");
         }

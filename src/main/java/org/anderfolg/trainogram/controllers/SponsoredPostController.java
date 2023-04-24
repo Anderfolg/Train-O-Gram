@@ -50,6 +50,7 @@ public class SponsoredPostController {
         return new ResponseEntity<>(new ApiResponse(true, "Post has been deleted"), HttpStatus.OK);
     }
 
+    //  TODO (Bogdan O.) 24/4/23: refactor this
     @GetMapping(value = "/all")
     public ResponseEntity<List<Post>> getAll() {
         List<Post> sponsoredPosts= sponsorPostService.listSponsoredPosts();

@@ -92,6 +92,7 @@ public class CommentServiceImpl implements CommentService {
         log.info("updating comment by user {}", user.getUsername());
     }
 
+    //  TODO (Bogdan O.) 24/4/23: use ModelMapper instead
     public CommentDto getDtoFromComment( Comment comment ) {
         return new CommentDto(comment);
     }

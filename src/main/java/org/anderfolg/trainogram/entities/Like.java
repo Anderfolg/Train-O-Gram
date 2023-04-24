@@ -31,6 +31,7 @@ public class Like {
     private ContentType contentType;
 
 
+    //  TODO (Bogdan O.) 24/4/23: remove this
     public Like( User user, Long contentId, ContentType contentType) {
         this.user = user;
         this.contentId = contentId;
