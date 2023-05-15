@@ -54,8 +54,11 @@ public class LikeToPostServiceImpl implements LikeToPostService {
         Post post = postService.findPostById(postID);
         if ( !likeV2repository.existsByUserAndContentId(user,postID) ){
 
-
-            Like like = new Like(user, post.getId(), ContentType.POST);
+            Like like = Like.builder()
+                    .user(user)
+                    .contentId(post.getId())
+                    .contentType(ContentType.POST)
+                    .build();
             likeV2repository.save(like);
 
             NotificationDto notificationDto = NotificationDto.builder()

@@ -2,14 +2,23 @@ package org.anderfolg.trainogram.service.impl;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.anderfolg.trainogram.entities.ContentType;
-import org.anderfolg.trainogram.entities.dto.PostDto;
 import org.anderfolg.trainogram.entities.Post;
 import org.anderfolg.trainogram.entities.SponsorPost;
+import org.anderfolg.trainogram.entities.User;
+import org.anderfolg.trainogram.entities.dto.PostDto;
 import org.anderfolg.trainogram.exceptions.*;
 import org.anderfolg.trainogram.repo.SponsorPostRepository;
 import org.anderfolg.trainogram.security.jwt.JwtUser;
-import org.anderfolg.trainogram.service.*;
+import org.anderfolg.trainogram.service.PostService;
+import org.anderfolg.trainogram.service.SponsorPostService;
+import org.anderfolg.trainogram.service.UserService;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -67,27 +76,31 @@ public class SponsorPostServiceImpl implements SponsorPostService {
 
 
     @Override
-    public List<Post> listSponsoredPosts(){
-        List<SponsorPost> sponsorPosts = sponsorPostRepository.findAll();
+    public Page<Post> listSponsoredPosts(int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Page<SponsorPost> sponsorPosts = sponsorPostRepository.findAll(pageable);
         List<Post> posts = new ArrayList<>();
-        for (SponsorPost sponsorPost:sponsorPosts) {
+        for (SponsorPost sponsorPost : sponsorPosts) {
             posts.add(sponsorPost.getSponsoredPost());
         }
-        return posts;
+        return new PageImpl<>(posts, pageable, sponsorPosts.getTotalElements());
+    }
+
+
+    @Override
+    public Page<PostDto> listSponsoredPostsByUser( JwtUser jwtUser , int page, int pageSize) throws Status419UserException {
+        return postService.listPostsByUserAndType(jwtUser,ContentType.SPONSORED_POST, page, pageSize);
     }
 
     @Override
-    public List<PostDto> listSponsoredPostsByUser( JwtUser jwtUser ) throws Status419UserException {
-        return postService.listPostsByUserAndType(jwtUser,ContentType.SPONSORED_POST, 0, 1000).getContent();
+    public Page<Post> listSponsoredPostsBySponsor(Long sponsorID, int page, int size) throws Status419UserException {
+        User sponsor = userService.findUserById(sponsorID);
+        Pageable pageable = PageRequest.of(page, size);
+        Page<SponsorPost> sponsorPostsPage = sponsorPostRepository.findAllBySponsor(sponsor, pageable);
+        List<Post> posts = sponsorPostsPage.getContent().stream()
+                .map(SponsorPost::getSponsoredPost)
+                .toList();
+        return new PageImpl<>(posts, pageable, sponsorPostsPage.getTotalElements());
     }
 
-    @Override
-    public List<Post> listSponsoredPostsBySponsor( Long sponsorID ) throws Status419UserException {
-        List<SponsorPost> sponsorPosts = sponsorPostRepository.findAllBySponsor(userService.findUserById(sponsorID));
-        List<Post> posts = new ArrayList<>();
-        for (SponsorPost sponsorPost:sponsorPosts) {
-            posts.add(sponsorPost.getSponsoredPost());
-        }
-        return posts;
-    }
 }

@@ -51,7 +51,12 @@ public class LikeToCommentServiceImpl implements LikeToCommentService {
         User user = userService.findUserById(jwtUser.id());
         Comment comment = commentService.findCommentById(commentID);
         if ( !likeV2repository.existsByUserAndContentId(user,commentID) ){
-            Like like = new Like(user, comment.getId(), ContentType.COMMENT);
+
+            Like like = Like.builder()
+                    .user(user)
+                    .contentId(comment.getId())
+                    .contentType(ContentType.COMMENT)
+                    .build();
             likeV2repository.save(like);
             log.info("adding like to comment with id : {} from user: {}", comment.getId(), user.getUsername());
             NotificationDto notificationDto = NotificationDto.builder()

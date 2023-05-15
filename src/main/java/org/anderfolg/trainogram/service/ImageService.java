@@ -7,7 +7,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface ImageService {
     String uploadImage( MultipartFile file, String username )
-            throws Status435StorageException, Status432InvalidFileNameException, Status430InvalidFileException;
+            throws Status435StorageException,
+            Status432InvalidFileNameException,
+            Status430InvalidFileException;
 
     String getUploadDirectory();
 

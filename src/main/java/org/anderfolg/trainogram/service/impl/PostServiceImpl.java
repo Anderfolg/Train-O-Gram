@@ -29,11 +29,23 @@ public class PostServiceImpl implements PostService {
     private final ImageService imageService;
     private final UserService userService;
 
-    @Override
-    public Page<Post> listPosts(int page, int pageSize) {
-        Pageable pageable = PageRequest.of(page, pageSize);
+    public Page<Post> listPosts(Long cursorId, int pageSize) {
+        Pageable pageable = null;
+
+        if (cursorId == null) {
+            pageable = PageRequest.of(0, pageSize);
+        } else {
+            Post post = findPostById(cursorId);
+            if (post != null) {
+                pageable = PageRequest.of(0, pageSize, Sort.by(Sort.Direction.DESC, "id")).next();
+            } else {
+                throw new IllegalArgumentException("Invalid cursor");
+            }
+        }
+
         return postRepository.findAllByType(ContentType.POST, pageable);
     }
+
 
     @Override
     public Page<PostDto> listPostsByUser(Long userID, int page, int size) throws Status419UserException {
@@ -42,6 +54,29 @@ public class PostServiceImpl implements PostService {
         Page<Post> postPage = postRepository.findAllByUser(user, paging);
         return new PageImpl<>(postPage.getContent(), paging, postPage.getTotalElements()).map(this::getDtoFromPost);
     }
+/*
+    @Override
+    public Page<PostDto> listPostsByUser(Long userID, Long cursorId, int size) throws Status419UserException {
+        User user = userService.findUserById(userID);
+        Pageable pageable = null;
+
+        if (cursor == null) {
+            pageable = PageRequest.of(0, size, Sort.by("createDate").descending());
+        } else {
+            Post post = postRepository.findByCursor(cursor);
+            if (post != null && post.getUser().equals(user)) {
+                pageable = PageRequest.of(0, size, Sort.by("createDate").descending()).next();
+            } else {
+                throw new IllegalArgumentException("Invalid cursor");
+            }
+        }
+
+        Page<Post> postPage = postRepository.findAllByUser(user, pageable);
+        List<PostDto> postDtoList = postPage.getContent().stream().map(this::getDtoFromPost).toList());
+        return new PageImpl<>(postDtoList, pageable, postPage.getTotalElements());
+    }
+*/
+
 
     @Override
     public Post findPostById( Long id ) throws Status436DoesntExistException {
@@ -127,12 +162,12 @@ public class PostServiceImpl implements PostService {
         return postDto;
     }
     public Post getPostFromRequest(String description, User user, MultipartFile image) throws Status435StorageException, Status432InvalidFileNameException, Status430InvalidFileException {
-        Post post = new Post();
-        post.setImageName(imageService.uploadImage(image, user.getUsername()));
-        post.setImageUrl(imageService.getUploadDirectory()+user.getUsername());
-        post.setDescription(description);
-        post.setType(ContentType.POST);
-        post.setUser(user);
-        return post;
+        return Post.builder()
+                .description(description)
+                .user(user)
+                .type(ContentType.POST)
+                .imageName(imageService.uploadImage(image, user.getUsername()))
+                .imageUrl(imageService.getUploadDirectory()+user.getUsername())
+                .build();
     }
 }

@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -29,9 +28,9 @@ public class PostController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<Page<Post>> getPosts(@RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<Page<Post>> getPosts(@RequestParam(required = false) Long cursorId,
                                                @RequestParam(defaultValue = "10") int pageSize) {
-        Page<Post> posts = postService.listPosts(page, pageSize);
+        Page<Post> posts = postService.listPosts(cursorId, pageSize);
         return ResponseEntity.ok(posts);
     }
 

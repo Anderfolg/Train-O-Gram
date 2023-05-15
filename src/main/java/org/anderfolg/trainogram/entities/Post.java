@@ -1,8 +1,7 @@
 package org.anderfolg.trainogram.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.*;
 
 import javax.persistence.*;
@@ -13,6 +12,8 @@ import java.util.Set;
 @Data
 @Entity
 @RequiredArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "posts")
 public class Post {
 
@@ -50,4 +51,5 @@ public class Post {
     public void initCreateDate() {
         this.createDate = LocalDateTime.now();
     }
+
 }

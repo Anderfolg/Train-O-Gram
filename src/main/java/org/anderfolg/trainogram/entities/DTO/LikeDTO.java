@@ -1,19 +1,16 @@
 package org.anderfolg.trainogram.entities.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import org.anderfolg.trainogram.entities.ContentType;
-
-import java.util.Set;
 
 @AllArgsConstructor
 @Setter
 @Getter
-public class CommentDto {
+public class LikeDTO {
     private Long id;
-    private String content;
     private Long userId;
-    private Long postId;
-    private Set<LikeDTO> likes;
-    private ContentType type;
-
+    private Long contentId;
+    private ContentType contentType;
 }

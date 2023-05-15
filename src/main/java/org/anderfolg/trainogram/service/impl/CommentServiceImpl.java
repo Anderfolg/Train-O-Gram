@@ -3,11 +3,11 @@ package org.anderfolg.trainogram.service.impl;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.anderfolg.trainogram.entities.Comment;
-import org.anderfolg.trainogram.entities.dto.CommentDto;
-import org.anderfolg.trainogram.entities.dto.NotificationDto;
 import org.anderfolg.trainogram.entities.NotificationType;
 import org.anderfolg.trainogram.entities.Post;
 import org.anderfolg.trainogram.entities.User;
+import org.anderfolg.trainogram.entities.dto.CommentDto;
+import org.anderfolg.trainogram.entities.dto.NotificationDto;
 import org.anderfolg.trainogram.exceptions.Status419UserException;
 import org.anderfolg.trainogram.exceptions.Status436DoesntExistException;
 import org.anderfolg.trainogram.repo.CommentRepository;
@@ -16,11 +16,11 @@ import org.anderfolg.trainogram.service.CommentService;
 import org.anderfolg.trainogram.service.NotificationService;
 import org.anderfolg.trainogram.service.PostService;
 import org.anderfolg.trainogram.service.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -30,6 +30,8 @@ public class CommentServiceImpl implements CommentService {
     private final PostService postService;
     private final UserService userService;
     private final NotificationService notificationService;
+
+    private final ModelMapper modelMapper;
 
 
     @Override
@@ -69,7 +71,6 @@ public class CommentServiceImpl implements CommentService {
 
         notificationService.createNotification(notificationDto, post.getUser(), NotificationType.COMMENT);
 
-        // Log the commented
         log.info("Saved comment by user {}", user.getUsername());
     }
 
@@ -92,9 +93,8 @@ public class CommentServiceImpl implements CommentService {
         log.info("updating comment by user {}", user.getUsername());
     }
 
-    //  TODO (Bogdan O.) 24/4/23: use ModelMapper instead
     public CommentDto getDtoFromComment( Comment comment ) {
-        return new CommentDto(comment);
+        return modelMapper.map(comment, CommentDto.class);
     }
 
 }

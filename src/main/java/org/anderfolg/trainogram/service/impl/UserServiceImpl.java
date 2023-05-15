@@ -1,10 +1,10 @@
 package org.anderfolg.trainogram.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.anderfolg.trainogram.entities.dto.UserDto;
 import org.anderfolg.trainogram.entities.User;
-import org.anderfolg.trainogram.exceptions.Status420AlreadyExistsException;
+import org.anderfolg.trainogram.entities.dto.UserDto;
 import org.anderfolg.trainogram.exceptions.Status419UserException;
+import org.anderfolg.trainogram.exceptions.Status420AlreadyExistsException;
 import org.anderfolg.trainogram.repo.UserRepository;
 import org.anderfolg.trainogram.security.jwt.JwtTokenProvider;
 import org.anderfolg.trainogram.service.UserService;
@@ -21,7 +21,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.anderfolg.trainogram.entities.Role.USER;

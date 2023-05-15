@@ -4,9 +4,8 @@ import org.anderfolg.trainogram.entities.dto.PostDto;
 import org.anderfolg.trainogram.entities.Post;
 import org.anderfolg.trainogram.exceptions.*;
 import org.anderfolg.trainogram.security.jwt.JwtUser;
+import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
 
 public interface SponsorPostService {
     void addSponsorPost(String description, JwtUser jwtUser, MultipartFile file, Long sponsorID)
@@ -24,10 +23,10 @@ public interface SponsorPostService {
     void deleteSponsorPost( JwtUser jwtUser, Long sponsorPostID)
             throws Status436DoesntExistException, Status419UserException;
 
-    List<Post> listSponsoredPosts();
-    List<PostDto> listSponsoredPostsByUser(JwtUser jwtUser)
+    Page<Post> listSponsoredPosts(int page, int pageSize);
+    Page<PostDto> listSponsoredPostsByUser( JwtUser jwtUser , int page, int pageSize)
             throws Status419UserException;
-    List<Post> listSponsoredPostsBySponsor(Long sponsorID)
+    Page<Post> listSponsoredPostsBySponsor(Long sponsorID, int page, int size)
             throws Status419UserException;
 
 }

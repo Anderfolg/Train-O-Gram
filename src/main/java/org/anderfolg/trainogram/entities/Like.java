@@ -1,9 +1,7 @@
 package org.anderfolg.trainogram.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -12,6 +10,8 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Setter
 @Getter
+@AllArgsConstructor
+@Builder
 public class Like {
 
     @Id
@@ -30,11 +30,4 @@ public class Like {
     @Column(name = "content_type",nullable = false)
     private ContentType contentType;
 
-
-    //  TODO (Bogdan O.) 24/4/23: remove this
-    public Like( User user, Long contentId, ContentType contentType) {
-        this.user = user;
-        this.contentId = contentId;
-        this.contentType = contentType;
-    }
 }

@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 public interface PostService {
-    Page<Post> listPosts(int page, int pageSize);
+    Page<Post> listPosts(Long cursorId, int pageSize);
     Page<PostDto> listPostsByUser(Long userID, int page, int size)
             throws Status419UserException;
     Post findPostById(Long id)
